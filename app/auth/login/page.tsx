@@ -92,8 +92,9 @@ export default function LoginPage() {
 
     return (
         <AuthLayout>
+           
             {/* Menggunakan padding di sini, bukan di div baru */}
-            <div className="w-full text-left">
+            <div className="w-full  text-left">
                 {/* 2. Judul dan Theme Switcher dibuat sejajar */}
                 <div className="flex items-center justify-between">
                     <h1 className="text-4xl font-bold md:text-5xl">Login</h1>
