@@ -5,13 +5,50 @@ import { Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useEffect } from "react";
+import { ChevronDown, Check } from 'lucide-react';
 
 export default function signup() {
-
     const [showPassword, setShowPassword] = useState(false);
+    const [countries, setCountries] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data negara.');
+                }
+                const data = await response.json();
+                const sortedCountries = data.sort((a, b) =>
+                    a.name.common.localeCompare(b.name.common)
+                );
+
+                setCountries(sortedCountries);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCountries();
+    }, []);
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
-    }
+    };
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
+    const handleSelect = (country) => {
+        setSelectedCountry(country);
+        setIsOpen(false);
+    };
+
     return (
         <AuthSignup>
 
@@ -47,13 +84,56 @@ export default function signup() {
                     placeholder="Job Title/Role"
                     className="w-full px-4 py-2 border border-gray-300 bg-[#EBF1FF] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <label htmlFor="Your Name" className="font-medium">Country</label>
-                <input
-                    type="text"
-                    id="email"
-                    placeholder="Country"
-                    className="w-full px-4 py-2 border border-gray-300 bg-[#EBF1FF] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+           <label htmlFor="Your Name" className="font-medium ">Pilih Negara</label>
+                 
+                <div className="relative">
+                    <button
+                        type="button"
+                        className="flex  items-center justify-between w-full px-4 py-2 text-left  bg-[#EBF1FF] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onClick={toggleDropdown}
+                    >
+                        <span>
+                            {selectedCountry ? selectedCountry.name.common : 'Pilih Negara...'}
+                        </span>
+                        <ChevronDown
+                            className={`h-5 w-5 text-gray-400 transform  transition-transform ${isOpen ? 'rotate-180' : ''
+                                }`}
+                        />
+                    </button>
+
+                    {isOpen && (
+                        <div className="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200">
+                            <ul className="py-1 max-h-60 overflow-y-auto">
+                                {isLoading && (
+                                    <li className="px-4 py-2 text-gray-500">Memuat...</li>
+                                )}
+                                {error && <li className="px-4 py-2 text-red-500">Error: {error}</li>}
+
+                                {!isLoading &&
+                                    !error &&
+                                    countries.map((country) => (
+                                        <li
+                                            key={country.cca3} // pakai kode unik biar lebih aman
+                                            className="cursor-pointer px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                                            onClick={() => handleSelect(country)}
+                                        >
+                                            {/* bendera (opsional, jika datanya ada) */}
+                                            {country.flags && (
+                                                <img
+                                                    src={country.flags.png}
+                                                    alt={country.name.common}
+                                                    className="w-5 h-4 object-cover"
+                                                />
+                                            )}
+                                            {/* nama negara */}
+                                            <span>{country.name.common}</span>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
                 <label htmlFor="Your Name" className="font-medium">Password</label>
                 <div className="relative"> {/* Use relative on the container */}
                     <input

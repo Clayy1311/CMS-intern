@@ -1,33 +1,31 @@
-// components/ThemeSwitcher.jsx (atau file serupa)
-'use client'; // Penting untuk App Router di Next.js
+// components/ThemeSwitcher.jsx
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 export default function ThemeSwitcher() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
-  // Periksa preferensi sistem saat komponen dimuat
+  // useEffect ini penting untuk menghindari error saat render di server (hydration mismatch)
   useEffect(() => {
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (systemPrefersDark) {
-      document.documentElement.classList.add('dark');
-      setIsDarkMode(true);
-    }
+    setMounted(true);
   }, []);
 
-  const toggleDarkMode = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove('dark');
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      setIsDarkMode(true);
-    }
+  // Jika belum di-mount (masih di server), jangan render apa-apa
+  if (!mounted) {
+    return null;
+  }
+
+  // Fungsi untuk mengganti tema
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <button onClick={toggleDarkMode}>
-      {isDarkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+    <button onClick={toggleTheme} className="p-2">
+      {theme === 'dark' ? '🌞 Light Mode' : '🌙 Dark Mode'}
     </button>
   );
 }
