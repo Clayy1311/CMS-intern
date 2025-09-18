@@ -4,7 +4,6 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-
 export const register = async (req, res) => {
 
   
@@ -112,7 +111,7 @@ export const login = async (req, res) =>{
         
 
         if(!user.isVerified) {
-            return res.status(400).json("Please Verify Your Email");
+            return res.status(400).json({ message : "Please Verify Your Email"});
         };
             
             
@@ -159,9 +158,89 @@ export const profile = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error : error.message})
     }
+}
 
-  
+export const requestResetPassword = async (req, res) => {
 
+  try {
+    const {email} = req.body;
+
+    const user = await prisma.users.findUnique({ where : {email}});
+
+    if (!user) return res.status(404).json({ error : "User Not Found"});
+
+    if(!user.isVerified) return res.status(400).json({error : "User Not Verified"})
+
+    const token = jwt.sign(
+
+      {email : user.email},
+      process.env.JWT_SECRET,
+      { expiresIn: "20m"}
+
+    )
+
+    await prisma.users.update({
+      where : {id : user.id},
+      data :{verifytoken : token}
+  })
+
+
+    const resetlink = `http://localhost:3000/api/auth/resetpassword?token=${token}`
+
+      const transporter = nodemailer.createTransport({
+        service : "gmail",
+        auth : {
+            user : process.env.EMAIL_USER,
+            pass : process.env.USER_PASS
+        }
+    })
+  await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verify your email",
+      html: `
+        <h3>Welcome, ${user.full_name}!</h3>
+        <p>Please reset your password by clicking below:</p>
+        <a href="${resetlink}">${resetlink}</a>
+      `,
+    });
+
+    res.json({message : "Reset password link sent to your email"})
+
+  } catch (error) {
+    return res.status(500).json({error : error.message})
+  }
+}
+
+export const resetpassword = async (req, res) => {
+
+  try {
+    
+    const {token} = req.query;
+    const {newPassword} = req.body;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+    const user = await prisma.users.findFirst({
+      where : {email : decoded.email, verifytoken : token}
+    })
+
+    if(!user) return res.status(404).json({message : "User not found"});
+    if(!user.isVerified) return res.status(403).json({message : "user not verified please verify first"})
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.users.update({
+      where : {id : user.id},
+      data : { password : hashedPassword, verifytoken : null}
+  })
+    
+    res.json({ message : "Password reset successful!"})
+  }
+
+  catch(error){
+         return res.status(400).json({ error: "Invalid or expired token"})
+  }
 }
 
 
