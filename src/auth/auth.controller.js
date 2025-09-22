@@ -3,6 +3,7 @@ import prisma from "../db/index.js"
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { json } from "express";
 
 export const register = async (req, res) => {
 
@@ -121,16 +122,66 @@ export const login = async (req, res) =>{
 
         const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET, {
 
-            expiresIn: "1h",
+            expiresIn: "15m",
         }
 
         );
 
-        res.json({ message : "Login Successful", token});
+        const refreshToken = jwt.sign({id: user.id}, process.env.REFRESH_TOKEN_SECRET, {
+          expiresIn : "7d",
+        })
+
+
+        await prisma.users.update({
+          where : {id : user.id},
+          data : {refreshToken},
+        })
+
+        res.json({ message : "Login Successful", token, refreshToken});
     } catch (error) {
         res.status(500).json({error : error.message})
     }
 };
+
+export const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body; 
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Refresh token required" });
+    }
+
+  
+    const user = await prisma.users.findFirst({
+      where: { refreshToken },
+    });
+
+    if (!user) {
+      return res.status(403).json({ error: "Invalid refresh token" });
+    }
+
+   
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ error: "Expired or invalid refresh token" });
+      }
+
+    
+      const newAccessToken = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET,
+        { expiresIn: "15m" }
+      );
+
+      return res.json({
+        accessToken: newAccessToken,
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 
 
 export const profile = async (req, res) => {
@@ -245,24 +296,20 @@ export const resetpassword = async (req, res) => {
 
 
 export const logout = async (req, res) => {
-  try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1]; 
+ try {
+  
+  const userid = req.userId;
 
-    if (!token) {
-      return res.status(400).json({ error: "Token not provided" });
-    }
+const user = await prisma.users.update({
+  where : {id : userid},
+  data : { refreshToken  : null},
+  
+})
 
-    await prisma.logoutToken.upsert({
-      where: { token },
-      update: {}, 
-      create: { token },
-    });
-
-    res.json({ message: "Logout Successfully" });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
+res.json({ message : "Logout Successfully"})
+ } catch (error) {
+    return res.status(500).json({error : error.message})
+ }
 };
 
 
