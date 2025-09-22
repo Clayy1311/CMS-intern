@@ -21,12 +21,7 @@ model Users {
   job       String
   country   String
   password  String
+  refreshToken  String?
   isVerified Boolean @default(false)
   verifytoken String? 
-}
-
-model LogoutToken {
-  id        Int   @id @default(autoincrement())
-  token     String @unique
-  CreatedAt DateTime @default(now())
 }
