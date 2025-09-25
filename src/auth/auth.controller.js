@@ -34,7 +34,7 @@ export const register = async (req, res) => {
             verifytoken: token
             },
         });
-        const verifylink = `http://localhost:3000/api/auth/verifyemail?token=${token}`
+        const verifylink = `http://localhost:3001/api/auth/verifyemail?token=${token}`
 
   const transporter = nodemailer.createTransport({
         service : "gmail",
