@@ -35,7 +35,7 @@ export const google = async (req, res) => {
           company: "Google User",
           job: "N/A",
           country: "N/A",
-          password: "", // kosong, karena pakai Google login
+          password: null, 
           isVerified: true,
            }
                 
