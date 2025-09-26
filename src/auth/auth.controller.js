@@ -18,6 +18,9 @@ export const register = async (req, res) => {
             password
         } = req.body;
 
+        if(!password){
+          return res.status(400).json({error : "Password Is Required"})
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const token = jwt.sign({email}, process.env.JWT_SECRET,{expiresIn : "1d"});
@@ -106,7 +109,9 @@ export const login = async (req, res) =>{
             email,
             password,
         } = req.body;
-          
+        if(!password){
+          return res.status(400).json({error : "Password Is Required"})
+        }
         const user = await prisma.users.findUnique({ where : {email}});
         if (!user)  return res.status(404).json({error : "User Not Found"});
         
