@@ -20,7 +20,7 @@ model Users {
   company   String
   job       String
   country   String
-  password  String
+  password  String?
   projects  Project[] 
   refreshToken  String?
   isVerified Boolean @default(false)
@@ -68,6 +68,9 @@ model Column {
   modelId Int
   model Model @relation(fields: [modelId], references:[id])
 }
+
+
+
 
 
 
