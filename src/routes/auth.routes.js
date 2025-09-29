@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { register, login, profile, logout, 
-    verifyemail, requestResetPassword, resetpassword,refreshToken } from "./auth.controller.js";
+    verifyemail, requestResetPassword, resetpassword,refreshToken } from "../controllers/auth.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { google } from "./google.controller.js";
 
