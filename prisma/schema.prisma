@@ -15,62 +15,16 @@ datasource db {
 
 model Users {
   id        Int    @id @default(autoincrement())
-  full_name String
+  fullName String @default("Unknown") 
   email     String @unique
   company   String
   job       String
   country   String
+  avatar    String?  
   password  String?
-  projects  Project[] 
   refreshToken  String?
   isVerified Boolean @default(false)
-  verifytoken String? 
+  verifyToken String? 
 }
-
-model Project {
-  id Int @id @default(autoincrement())
-  name String
-  description String?
-  ownerId Int
-  owner Users @relation(fields: [ownerId], references: [id])
-  models  Model[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-} 
-
-
-model Model {
-  id Int @id @default(autoincrement())
-  name String
-  projectId Int
-  project Project @relation(fields: [projectId], references: [id])
-  column Column[]
-  record Record[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Record {
-  id Int  @id @default(autoincrement())
-  name String
-  data Json
-  modelId Int 
-  model Model @relation(fields: [modelId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Column {
-  id Int @id @default(autoincrement())
-  name String
-  type String
-  required Boolean @default(false)
-  modelId Int
-  model Model @relation(fields: [modelId], references:[id])
-}
-
-
-
-
 
 
