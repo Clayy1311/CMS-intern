@@ -15,7 +15,7 @@ datasource db {
 
 model Users {
   id        Int    @id @default(autoincrement())
-  fullName String @default("Unknown") 
+  fullName  String
   email     String @unique
   company   String
   job       String
