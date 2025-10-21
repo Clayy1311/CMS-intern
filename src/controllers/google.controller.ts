@@ -2,7 +2,9 @@ import { OAuth2Client } from 'google-auth-library'
 import prisma from "../db/index"
 import jwt from "jsonwebtoken"
 import { Request, Response } from 'express'
-export const google = async (req:Request, res:Response) => {
+
+
+export async function google(req:Request, res:Response){
        
 
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
@@ -16,17 +18,20 @@ export const google = async (req:Request, res:Response) => {
           audience : process.env.GOOGLE_CLIENT_ID
 
         })
-
+         
         const payload = ticket.getPayload();
         if (!payload?.email) {
          return res.status(400).json({ error: "Google authentication failed" });
         }
        
-    const email = payload.email;
-    const fullName = payload.name
+    
+      const {email, name, picture} = payload;
       
+if (!name || !email) {
+  throw new Error("Full name and email are required");
+}
         let user = await prisma.users.findUnique({where : {email}});
-
+        const defaultAvatar = "https://res.cloudinary.com/demo/image/upload/v123456789/avatar.png";
 
         if(!user) {
 
@@ -34,12 +39,13 @@ export const google = async (req:Request, res:Response) => {
            data :
 
            {
-           fullName,
+           fullName : name,
           email,
           company: "Google User",
           job: "N/A",
           country: "N/A",
           password: null, 
+          avatar:picture || defaultAvatar,
           isVerified: true,
            }
                 
