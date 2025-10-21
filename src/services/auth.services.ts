@@ -4,57 +4,67 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { RegisterUserInput, LoginUserInput, VerifyEmail, ResetPassword  } from "../types/auth.types.js";
-export const registerUser = async(data: RegisterUserInput) => {
-       const { fullName, email, company, job, country, password } = data;
-      const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
-      
-      const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
-    throw new Error("JWT_SECRET is not defined in environment variables");
+
+    export async function registerUser(data: RegisterUserInput){
+        const { fullName, email, company, job, country, password } = data;
+        const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+    
+        const jwtSecret = process.env.JWT_SECRET;
+          if (!fullName) throw new Error("Full name is required");
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET is not defined in environment variables");
+    }
+          const token = jwt.sign({email}, jwtSecret,{expiresIn : "1d"});
+          if (!fullName || fullName.trim() === "") {
+    throw new Error("Full name is required");
   }
-        const token = jwt.sign({email}, jwtSecret,{expiresIn : "1d"});
-        const user = await prisma.users.create({
-            data:
-            {
-           fullName,
-            email,
-            company,
-          job,
-          country,
-            password : hashedPassword,
-            isVerified : false,
-              verifyToken : token
-            },
-        });
+  if (!email || email.trim() === "") {
+    throw new Error("Email is required");
+  }
+  if (!password || password.trim() === "") {
+    throw new Error("Password is required");
+  }
 
-        if(!password) throw new Error("Password Required")
-        const verifylink = `http://localhost:3002/api/auth/verifyemail?token=${token}`
+          const user = await prisma.users.create({
+              data:
+              {
+            fullName,
+              email,
+              company,
+            job,
+            country,
+              password : hashedPassword,
+              isVerified : false,
+                verifyToken : token
+              },
+          });
 
-  const transporter = nodemailer.createTransport({
-        service : "gmail",
-        auth : {
-            user : process.env.EMAIL_USER,
-            pass : process.env.USER_PASS
-        }
-    })
+          if(!password) throw new Error("Password Required")
+          const verifylink = `http://localhost:3001/api/auth/verifyemail?token=${token}`
 
-        await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Verify your email",
-      html: `
-        <h3>Welcome, ${fullName}!</h3>
-        <p>Please verify your email by clicking below:</p>
-        <a href="${verifylink}">${verifylink}</a>
-      `,
-    });
+    const transporter = nodemailer.createTransport({
+          service : "gmail",
+          auth : {
+              user : process.env.EMAIL_USER,
+              pass : process.env.USER_PASS
+          }
+      })
 
-    return {id : user.id, email: user.email, fullName: user.fullName}
-}
+          await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Verify your email",
+        html: `
+          <h3>Welcome, ${fullName}!</h3>
+          <p>Please verify your email by clicking below:</p>
+          <a href="${verifylink}">${verifylink}</a>
+        `,
+      });
 
+      return {id : user.id, email: user.email, fullName: user.fullName}
+  }
 
-export const verifyEmail = async({token} : {token : string}) => {
-  
+export async function verifyEmail({token} : {token: string}){
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as VerifyEmail;
  const user = await prisma.users.findFirst({
       where: {
@@ -74,7 +84,8 @@ export const verifyEmail = async({token} : {token : string}) => {
 }
 
 
-export const loginUser = async(data: LoginUserInput)=>{
+
+export async function loginUser(data: LoginUserInput){
     const {email, password} = data
     const user = await prisma.users.findUnique({ where: { email } });
     if (!user) throw new Error ("User Not Found");
@@ -110,7 +121,8 @@ return {token, refreshToken}
 }
 
 
-export const AccessToken = async ({ refreshToken }: { refreshToken: string }) => {
+
+export async function accessToken({refreshToken} : {refreshToken: string}){
   const user = await prisma.users.findFirst({
        where: { refreshToken },
      });
@@ -135,7 +147,7 @@ export const AccessToken = async ({ refreshToken }: { refreshToken: string }) =>
 };
 
 
-export const requestNewPassword  = async({email} : {email: string}) => {
+export async function requestNewPassword({email} : {email:string}){
    const user = await prisma.users.findUnique({ where : {email}});
 
    if (!user) throw new Error("User not found");
@@ -160,7 +172,7 @@ export const requestNewPassword  = async({email} : {email: string}) => {
   })
 
 
-    const resetlink = `http://localhost:3002/api/auth/resetpassword?token=${token}`
+    const resetlink = `http://localhost:3001/api/auth/resetpassword?token=${token}`
 
       const transporter = nodemailer.createTransport({
         service : "gmail",
@@ -181,18 +193,24 @@ export const requestNewPassword  = async({email} : {email: string}) => {
     });
 }
 
-export const resetPass = async(data: ResetPassword)=>{
+
+export async function resetPass(data: ResetPassword){
   const {token, newPassword} = data
    const jwtSecret = process.env.JWT_SECRET
      if (!jwtSecret) {
   throw new Error("JWT_SECRET is not defined in environment variables");
 }
-  let decoded: any;
+    let decoded: any;
+  try {
+ const decoded = jwt.verify(token, jwtSecret)
+  }catch(err){
+     throw new Error("Invalid Token")
+  }
 
     const user = await prisma.users.findFirst({
-      where : {email : decoded.email, verifyToken : token}
+      where : { verifyToken : token}
     })
-
+    
     if(!user) throw new Error("User Not Found")
     if(!user.isVerified) throw new Error("user not verified please verify first")
 
@@ -205,8 +223,8 @@ export const resetPass = async(data: ResetPassword)=>{
 }
 
 
-export const logoutUser =  async({userId} : {userId: number}) => {
 
+export async function logoutUser({userId} : {userId: number}){
    const user = await prisma.users.findUnique({
     where: { id:Number(userId) },
   });
