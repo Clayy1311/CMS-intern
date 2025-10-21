@@ -1,12 +1,14 @@
-import {loginUser, registerUser, verifyEmail,  AccessToken, resetPass, logoutUser } from "../services/auth.services"
+import {loginUser, registerUser, verifyEmail,  accessToken, resetPass, logoutUser } from "../services/auth.services"
 import { Prisma } from "@prisma/client";
 import { requestNewPassword } from "../services/auth.services";
 import { Request, Response } from "express";
 
-export const register = async (req: Request, res: Response) => {
+export async function register(req:Request, res:Response){
   try {
-    const { full_name: fullName, email, company, job, country, password } = req.body;
-
+    const { fullName, email, company, job, country, password } = req.body;
+    if(!fullName){
+      return res.status(400).json({ error: "fullName is required" });
+    }
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
     }
@@ -42,7 +44,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyemail = async (req:Request, res:Response) => {
+export async function emailVerify(req:Request, res:Response){
     try {
         
         const {token} =  req.query;
@@ -64,7 +66,7 @@ export const verifyemail = async (req:Request, res:Response) => {
   }
 };
 
-export const login = async (req:Request, res:Response) =>{
+export async function login(req:Request, res:Response){
     try {
         const {
         
@@ -90,7 +92,7 @@ const {token, refreshToken} = await loginUser({email, password})
 };
 
 
-export const refreshToken = async (req:Request, res:Response) => {
+export async function refreshToken(req:Request, res:Response){
   try {
     const { refreshToken } = req.body; 
 
@@ -98,7 +100,7 @@ export const refreshToken = async (req:Request, res:Response) => {
       return res.status(401).json({ error: "Refresh token required" });
     }
 
-  const newAccessToken = await AccessToken({refreshToken})
+  const newAccessToken = await accessToken({refreshToken})
  
       return res.json({
        newAccessToken
@@ -114,7 +116,7 @@ export const refreshToken = async (req:Request, res:Response) => {
 };
 
 
-export const requestResetPassword = async (req:Request, res:Response) => {
+export async function requestResetPassword(req:Request, res:Response){
 
   try {
     const {email} = req.body;
@@ -132,7 +134,7 @@ export const requestResetPassword = async (req:Request, res:Response) => {
 };
 
 
-export const resetpassword = async (req: Request, res: Response) => {
+export async function resetPassword(req:Request, res:Response){
   try {
     const { token } = req.query;
     const { newPassword } = req.body;
@@ -141,11 +143,15 @@ export const resetpassword = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Token is required" });
     }
 
+    if(!token){
+      return res.status(400).json({error : "Token Invalid"})
+    }
+
     if (!newPassword) {
       return res.status(400).json({ error: "New password is required" });
     }
 
-    await resetPass({ token, newPassword });
+    await resetPass({ token, newPassword, });
 
     return res.json({ message: "Password reset successful!" });
 
@@ -157,7 +163,7 @@ export const resetpassword = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req:Request, res:Response) => {
+export async function logout(req:Request, res:Response){
  try {
   
   const userId = req.userId;
