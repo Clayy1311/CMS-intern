@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 
-export const editProfile  = async (req:Request, res:Response) => {
+export async function editProfile(req:Request, res:Response){
   
      try {
          
