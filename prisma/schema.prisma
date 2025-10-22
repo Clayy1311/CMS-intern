@@ -27,4 +27,40 @@ model Users {
   verifyToken String? 
 }
 
+model Organizations {
+  id          Int       @id @default(autoincrement())
+  name        String
+  ownerId     Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  owner       Users     @relation(fields: [ownerId], references: [id])
+  projects    Projects[]
+  collaborators Collaborators[]
+}
+
+model Projects {
+  id              Int       @id @default(autoincrement())
+  organizationId  Int
+  name            String
+  status          String    @default("Progress")
+  customDomain    String? 
+  lastUpdated     DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+
+  organization    Organizations @relation(fields: [organizationId], references: [id])
+  collaborators   Collaborators[]
+}
+
+model Collaborators {
+  id          Int       @id @default(autoincrement())
+  projectId   Int
+  userId      Int
+  role        String    @default("collaborator") // owner, editor, viewer, etc.
+  status      String    @default("active")       // active, pending, etc.
+  createdAt   DateTime  @default(now())
+
+  project     Projects  @relation(fields: [projectId], references: [id])
+  user        Users     @relation(fields: [userId], references: [id])
+}
 
