@@ -13,3 +13,9 @@ export interface UpdateOrganizations {
     id: number,
     ownerId : number
 }
+
+
+export interface DeleteOrganizations {
+    id: number,
+    ownerId: number
+}

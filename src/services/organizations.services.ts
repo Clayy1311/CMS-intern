@@ -1,5 +1,5 @@
 import prisma from "../db/index"
-import { GetAllOrganizations, Organizations, UpdateOrganizations} from "../types/organizations"
+import { GetAllOrganizations, Organizations, UpdateOrganizations, DeleteOrganizations} from "../types/organizations"
 
 
 export async function createResource(data : Organizations){
@@ -47,16 +47,39 @@ export async function findResources(data: GetAllOrganizations ){
 export async function updateResources(data: UpdateOrganizations){
       
     const {id, name, ownerId} = data
+     
+    const existingOrg = await prisma.organizations.findUnique({ where: { id } });
+    if(!existingOrg) throw new Error("Organizations Not Found");
 
+    if(existingOrg.ownerId !== ownerId) {
+        throw new Error("You are not authorized to update this organization");
+    }
     const organizations = await prisma.organizations.update({
         where : {id},
-        data: {
-            ownerId,
-            name
-        }
+        data: { name },
+        select: {id: true, name: true, ownerId: true, updatedAt:true}
 
     })
 
     return organizations
     
+}
+
+
+export async function deleteResources(data: DeleteOrganizations){
+
+    const {id, ownerId} = data
+     
+    const existingOrg = await prisma.organizations.findUnique({  where: { id },
+    select: { id: true, ownerId: true },})
+
+    if(!existingOrg) throw new Error("Organizations Not Found")
+    if(existingOrg.ownerId !== ownerId){
+         throw new Error("You are not authorized to update this organization");
+    }
+    const organizations = await prisma.organizations.delete({
+        where: {id},
+    })
+
+    return organizations
 }
