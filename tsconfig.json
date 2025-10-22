@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -14,5 +14,7 @@
 
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src", "prisma"],
+  "exclude": ["node_modules", "dist"]
 }
