@@ -25,6 +25,9 @@ model Users {
   refreshToken  String?
   isVerified Boolean @default(false)
   verifyToken String? 
+
+  ownedOrganizations Organizations[] @relation("UserOrganizations")
+  collaborations     Collaborators[]
 }
 
 model Organizations {
@@ -34,9 +37,8 @@ model Organizations {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  owner       Users     @relation(fields: [ownerId], references: [id])
+  owner       Users     @relation("UserOrganizations", fields: [ownerId], references: [id])
   projects    Projects[]
-  collaborators Collaborators[]
 }
 
 model Projects {
