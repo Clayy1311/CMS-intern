@@ -37,8 +37,9 @@ export async function findResources(data: FindProjects){
         throw new Error("You dont have authorize")
     }
     const projects = await prisma.projects.findMany({
-        where : {id : organizationsId},
-        select : {id: true, name: true, lastUpdated: true, collaborators:{ select : {id: true, user: {select : {id: true, email: true, avatar: true} } } }
+        where : {organizationId: organizationsId},
+        select : {id: true, name: true, lastUpdated: true, collaborators:{ select : {id: true, user: {select : {id: true, email: true, avatar: true} } }
+     }
     }
     })
        
