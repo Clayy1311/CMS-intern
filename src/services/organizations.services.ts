@@ -2,6 +2,7 @@ import prisma from "../db/index"
 import { GetAllOrganizations, Organizations, UpdateOrganizations, DeleteOrganizations} from "../types/organizations"
 
 
+
 export async function createResource(data : Organizations){
 
     const {name, ownerId} = data;
@@ -28,17 +29,27 @@ export async function findResources(data: GetAllOrganizations ){
        select : {
         id : true,
         name: true,
-        projects: {select: {collaborators: {select : {id : true, role: true, status:true,
-            user : {
-                select : {
-                    id: true,
-                    email: true,
-                    avatar: true
+      projects: {
+            select: {
+                name: true, 
+                collaborators: {
+                    select: {
+                        id: true,
+                        role: true,
+                        status: true,
+                        user: {
+                            select: {
+                                id: true,
+                                email: true,
+                                avatar: true
+                            }
+                        }
+                    }
                 }
             }
-        }}}}
-       }
-     })
+        }
+    }
+});
 
      return organizations
 }
@@ -83,3 +94,5 @@ export async function deleteResources(data: DeleteOrganizations){
 
     return organizations
 }
+
+

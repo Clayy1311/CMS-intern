@@ -1,6 +1,6 @@
 import { connect } from "http2";
 import prisma from "../db";
-import { AddCollaborators, EditCollaborators, FindAllCollaborators } from "../types/collaborators";
+import { AddCollaborators, DeleteCollaborators, EditCollaborators, FindAllCollaborators } from "../types/collaborators";
 
 export async function createResource(data:AddCollaborators){
      const {projectId, userId, ownerId}  = data
@@ -73,6 +73,31 @@ export async function findResource(data:FindAllCollaborators){
     const collaborators = await prisma.collaborators.findMany({
         where : {projectId: projectId},
        select : {status:true, role: true,user : {select : {id: true, fullName:true,  }}}
+    })
+
+    return collaborators
+}
+
+
+export async function deleteResource(data:DeleteCollaborators){
+    const {projectId, userId, ownerId, collaboratorsId} = data
+
+    const existingProject = await prisma.projects.findUnique({
+        where : {id:projectId},
+        include: {organization:true}
+    })
+
+    if(!existingProject) throw new Error("Project Not Found")
+    
+    if(existingProject.organization.ownerId !== ownerId){
+        throw new Error("You don't have to authorize")
+    }
+
+    const collaborators = await prisma.collaborators.delete({
+        where : {id:collaboratorsId},
+         select : {
+            userId : true
+         }
     })
 
     return collaborators

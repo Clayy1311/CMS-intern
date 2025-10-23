@@ -17,3 +17,10 @@ export interface FindAllCollaborators {
     projectId : number,
     ownerId : number,
 }
+
+export interface DeleteCollaborators {
+    projectId : number,
+    userId : number,
+    ownerId : number,
+    collaboratorsId : number
+}
