@@ -1,6 +1,6 @@
 import { connect } from "http2"
 import prisma from "../db/index"
-import { CreateProjects, FindProjects, UpdateProjects} from "../types/projects"
+import { CreateProjects, FindProjects, UpdateProjects, DeleteProject} from "../types/projects"
 
 export async function createResources(data: CreateProjects){
       const {name, organizationsId, ownerId} = data
@@ -69,4 +69,22 @@ export async function updateResources(data: UpdateProjects){
     })
 
     return project
+}
+
+export async function deleteResources(data: DeleteProject){
+    const {id, ownerId, organizationsId} = data
+
+    const existingOrg = await prisma.organizations.findUnique({where : {id : organizationsId}})
+
+   if(!existingOrg) throw new Error("organizations not found")
+
+   if(existingOrg.ownerId !== ownerId){
+    throw new Error("You dont have Authorize")
+   }
+
+   const projects = await prisma.projects.delete({
+    where : {id},
+   })
+
+   return projects
 }

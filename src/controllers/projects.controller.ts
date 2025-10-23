@@ -1,4 +1,5 @@
-import { createResources, findResources, updateResources } from "../services/projects.services";
+
+import { createResources, findResources, updateResources, deleteResources } from "../services/projects.services";
 import { Request, Response } from "express";
 
 
@@ -46,7 +47,7 @@ export async function getAllProjects(req:Request, res:Response){
     }
 }
 
-export async function UpdateProjects(req:Request, res:Response){
+export async function updateProjects(req:Request, res:Response){
 
 
     const {name} = req.body
@@ -70,4 +71,20 @@ export async function UpdateProjects(req:Request, res:Response){
     }
 
 
+}
+
+export async function deleteProjects(req:Request, res:Response){
+    const id =  parseInt(req.params.id)
+    const ownerId = req.userId
+    const organizationsId = parseInt(req.params.organizationsId)
+
+    try {
+        const projects = await deleteResources({id, ownerId : Number(ownerId), organizationsId})
+
+        return res.json({success: true, message: "Delete Successfully", data: projects})
+    } catch (err) {
+      if (err instanceof Error){
+         return res.status(500).json({error : err.message})
+      }
+    }
 }

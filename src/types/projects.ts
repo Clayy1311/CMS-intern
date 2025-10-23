@@ -17,3 +17,9 @@ export interface UpdateProjects {
     ownerId : number,
     id : number
 }
+
+export interface DeleteProject {
+    id: number,
+    organizationsId : number,
+    ownerId : number
+}
