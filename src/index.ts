@@ -7,6 +7,7 @@ import home from "./routes/home.routes";
 import { Request, Response } from "express";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import organizationsRoutes from "./routes/organizations.routes";
+import projectsRoutes from "./routes/projects.routes"
 const app = express();
 
 app.use(express.json());
@@ -20,8 +21,8 @@ app.use("/api/auth", authUser);
 app.use("/api/g", userData);
 app.use("/api/dashboard", authMiddleware, profile, home);
 
-//Organizations
-app.use("/api",authMiddleware,organizationsRoutes)
+//Organizations //projects
+app.use("/api",authMiddleware,organizationsRoutes, projectsRoutes)
 const PORT = process.env.PORT || 3000;
 
 
