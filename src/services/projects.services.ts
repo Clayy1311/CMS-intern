@@ -38,7 +38,7 @@ export async function findResources(data: FindProjects){
     }
     const projects = await prisma.projects.findMany({
         where : {organizationId: organizationsId},
-        select : {id: true, name: true, lastUpdated: true, collaborators:{ select : {id: true, user: {select : {id: true, email: true, avatar: true} } }
+        select : {id: true, name: true, lastUpdated: true, collaborators: { select : {id: true, role: true, user: {select : {id: true, email: true, avatar: true} } }
      }
     }
     })
