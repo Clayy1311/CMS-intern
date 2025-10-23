@@ -7,10 +7,16 @@ import home from "./routes/home.routes";
 import { Request, Response } from "express";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import organizationsRoutes from "./routes/organizations.routes";
-import projectsRoutes from "./routes/projects.routes"
+import projectsRoutes from "./routes/projects.routes";
+import collaboratorsRoutes from "./routes/collaborators.routes";
+import cors from 'cors';
 const app = express();
 
 app.use(express.json());
+app.use(cors({
+     origin: 'http://localhost:3000',
+       credentials: true
+}))
 
 dotenv.config();
 app.get("/", (req: Request, res:Response) => {
@@ -21,8 +27,8 @@ app.use("/api/auth", authUser);
 app.use("/api/g", userData);
 app.use("/api/dashboard", authMiddleware, profile, home);
 
-//Organizations //projects
-app.use("/api",authMiddleware,organizationsRoutes, projectsRoutes)
+//Organizations //projects //Collaborators
+app.use("/api",authMiddleware,organizationsRoutes, projectsRoutes, collaboratorsRoutes)
 const PORT = process.env.PORT || 3000;
 
 
