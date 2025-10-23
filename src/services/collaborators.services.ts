@@ -1,6 +1,6 @@
 import { connect } from "http2";
 import prisma from "../db";
-import { AddCollaborators, EditCollaborators } from "../types/collaborators";
+import { AddCollaborators, EditCollaborators, FindAllCollaborators } from "../types/collaborators";
 
 export async function createResource(data:AddCollaborators){
      const {projectId, userId, ownerId}  = data
@@ -50,6 +50,29 @@ export async function editResource(data:EditCollaborators){
             project : {connect : {id:projectId}},
             role
           }
+    })
+
+    return collaborators
+}
+
+
+export async function findResource(data:FindAllCollaborators){
+    const {projectId, ownerId} = data
+
+    const existingProject = await prisma.projects.findUnique({
+        where : {id:projectId},
+        include: {organization:true}
+    })
+
+    if(!existingProject) throw new Error("Project Not Found")
+
+    if(existingProject.organization.ownerId !== ownerId){
+        throw new Error("you don't have to authorize")
+    }
+
+    const collaborators = await prisma.collaborators.findMany({
+        where : {projectId: projectId},
+       select : {status:true, role: true,user : {select : {id: true, fullName:true,  }}}
     })
 
     return collaborators

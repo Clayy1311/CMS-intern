@@ -11,3 +11,9 @@ export interface EditCollaborators{
     collaboratorsId:number,
     role : string
 }
+
+
+export interface FindAllCollaborators {
+    projectId : number,
+    ownerId : number,
+}

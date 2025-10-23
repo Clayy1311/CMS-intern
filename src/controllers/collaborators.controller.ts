@@ -1,4 +1,4 @@
-import { createResource, editResource } from "../services/collaborators.services";
+import { createResource, editResource, findResource } from "../services/collaborators.services";
 import { Request, Response } from "express";
 
 
@@ -43,4 +43,21 @@ export async function editCollaborators(req:Request, res:Response){
             return res.status(500).json({error : err.message})
         }
     }
+}
+
+
+export async function findAllCollaborators(req:Request, res:Response){
+    const projectId = parseInt(req.params.projectId)
+    const ownerId = req.userId
+    
+    try {
+        const collaborators = await findResource({projectId, ownerId:Number(ownerId)})
+
+        return res.json({success : true, data: collaborators})
+    } catch (err) {
+        if(err instanceof Error){
+            return res.status(500).json({error : err.message})
+        }
+    }
+
 }
