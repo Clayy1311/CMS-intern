@@ -21,6 +21,7 @@ async function main(){
             isVerified : true,
             company : "Hawimaru Corp"
                 }
+
     })
        
     //Buat Dummy Data di tabel Organizations
