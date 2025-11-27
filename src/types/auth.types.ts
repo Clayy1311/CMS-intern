@@ -22,3 +22,9 @@ export interface ResetPassword {
  
    
 }
+
+export interface AllUser {
+    id : number
+    userId : number
+    projectId : number
+}

@@ -27,25 +27,22 @@ export async function createOrganizations(req:Request, res:Response){
     }
 }
 
-export async function getAllOrganizations(req:Request, res:Response){
-    
-    const ownerId = req.userId
-    try {
-        
-        const organizations = await findResources(
-            {ownerId : Number(ownerId)}
-        
-        )
+export async function getAllOrganizations(req: Request, res: Response) {
+  const userId = req.userId;
 
-        return res.status(201).json({
-            success: true,
-            data : organizations
-        })
-    } catch (err) {
-    if(err instanceof Error){
-        return res.status(500).json({error : err.message})
+  try {
+    const organizations = await findResources(Number(userId));
+
+    return res.json({
+      success: true,
+      data: organizations
+    });
+
+  } catch (err) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
     }
-    }
+  }
 }
 
 export async function updateOrganizations(req:Request, res:Response){

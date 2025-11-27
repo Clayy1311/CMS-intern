@@ -1,4 +1,4 @@
-import { createResource, editResource, findResource, deleteResource } from "../services/collaborators.services";
+import { createResource, editResource, findResource, deleteResource,getAllUser } from "../services/collaborators.services";
 import { Request, Response } from "express";
 
 
@@ -17,6 +17,25 @@ export async function addCollaborators(req:Request, res:Response){
       }
     }
 }
+
+
+//get all user
+
+export async function getUser(req:Request, res:Response){
+
+    const projectId = parseInt(req.params.projectId)
+    try {
+        const allUser = await getAllUser(projectId)
+
+
+        return res.json({success : true, data: allUser})
+    } catch (err) {
+        if(err instanceof Error){
+            return res.status(500).json({error : err.message})
+        }
+    }
+}
+
 
 
 export async function editCollaborators(req:Request, res:Response){
@@ -48,10 +67,10 @@ export async function editCollaborators(req:Request, res:Response){
 
 export async function findAllCollaborators(req:Request, res:Response){
     const projectId = parseInt(req.params.projectId)
-    const ownerId = req.userId
+    const userId = req.userId
     
     try {
-        const collaborators = await findResource({projectId, ownerId:Number(ownerId)})
+        const collaborators = await findResource({projectId, userId:Number(userId)})
 
         return res.json({success : true, data: collaborators})
     } catch (err) {

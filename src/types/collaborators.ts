@@ -15,7 +15,7 @@ export interface EditCollaborators{
 
 export interface FindAllCollaborators {
     projectId : number,
-    ownerId : number,
+    userId : number,
 }
 
 export interface DeleteCollaborators {

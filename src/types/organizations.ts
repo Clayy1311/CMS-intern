@@ -4,7 +4,7 @@ export interface Organizations {
 }
 
 export interface GetAllOrganizations {
-    ownerId : number,
+    userId : number,
  
 }
 
@@ -19,3 +19,4 @@ export interface DeleteOrganizations {
     id: number,
     ownerId: number
 }
+

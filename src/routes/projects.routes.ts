@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { createProjects,  deleteProjects,  getAllProjects, updateProjects} from "../controllers/projects.controller";
-
+import { organizationAccess } from "../middlewares/organizationMiddleware";
 
 
 const router = Router()
 
 router.post("/projects/:id", createProjects)
-router.get("/project/:organizationsId", getAllProjects )
+router.get("/project/:organizationId", organizationAccess, getAllProjects)
 router.patch("/organization/:organizationsId/project/:id", updateProjects)
 router.delete("/organization/:organizationsId/project/:id", deleteProjects)
 //ket : id ngambil dari field organizationsId dari tabel projects berelasi dengan tabel organizations

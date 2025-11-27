@@ -25,27 +25,57 @@ if(!existingOrg) throw new Error("Organizations Not Found");
 }
 
 
-export async function findResources(data: FindProjects){
+    export async function findResources(data: FindProjects){
 
-    const {ownerId, organizationsId} = data
+        const {userId, organizationId} = data
 
-    const existingOrg = await prisma.organizations.findUnique({where : {id: organizationsId}})
-     
-    if(!existingOrg) throw new Error("organization not found")
-    
-    if(existingOrg.ownerId !== ownerId){
+        const existingOrg = await prisma.organizations.findUnique({where : {id: organizationId}})
+        
+        if(!existingOrg) throw new Error("organization not found")
+        //check if owner 
+       const isOwner = existingOrg.ownerId === userId;
+
+       //check if collaborator
+       const isCollaborator = await prisma.projects.findFirst({
+        where : {
+            organizationId,
+            collaborators: {
+                some: {userId}
+            }
+        }
+       });
+
+       if(!isOwner && !isCollaborator){
         throw new Error("You dont have authorize")
-    }
-    const projects = await prisma.projects.findMany({
-        where : {organizationId: organizationsId},
-        select : {id: true, name: true, lastUpdated: true, collaborators: { select : {id: true, role: true, user: {select : {id: true, email: true, avatar: true} } }
-     }
-    }
-    })
-       
-    return projects
+       }
+
+        const projects = await prisma.projects.findMany({
+            where : {organizationId: organizationId},
+            select : {id: true, name: true, lastUpdated: true, collaborators: { select : {id: true, role: true, user: {select : {id: true, email: true, avatar: true} } }
+        }
+        },
+        
+        })
     
+      // format response
+  return projects.map(project => ({
+    id: project.id,
+    name: project.name,
+    lastUpdated: project.lastUpdated,
+    collaborators: project.collaborators.map(c => ({
+      id: c.user.id,
+      email: c.user.email,
+      avatar: c.user.avatar,
+      role: c.role,
+    })),
+    collaboratorCount: project.collaborators.length
+  }));
+
+
 }
+
+        
+    
 
 export async function updateResources(data: UpdateProjects){
     const {name, organizationsId, ownerId, id} = data

@@ -1,5 +1,6 @@
 import prisma from "../db/index"
 import { GetAllOrganizations, Organizations, UpdateOrganizations, DeleteOrganizations} from "../types/organizations"
+import { AllUser } from "../types/auth.types";
 
 
 
@@ -21,39 +22,56 @@ export async function createResource(data : Organizations){
 }
 
 
-export async function findResources(data: GetAllOrganizations ){
-     const {ownerId} = data;
-      
-     const organizations = await prisma.organizations.findMany({
-       where : {ownerId},
-       select : {
-        id : true,
-        name: true,
-      projects: {
-            select: {
-                name: true, 
-                collaborators: {
-                    select: {
-                        id: true,
-                        role: true,
-                        status: true,
-                        user: {
-                            select: {
-                                id: true,
-                                email: true,
-                                avatar: true
-                            }
-                        }
-                    }
+export async function findResources(userId: number) {
+  const organizations =  await prisma.organizations.findMany({
+    where: {
+      OR: [
+        { ownerId: userId },
+        {
+          projects: {
+            some: {
+              collaborators: { some: { userId } }
+            }
+          }
+        }
+      ]
+    },
+   include: {
+    owner: true,
+    projects: {
+        include: {
+            collaborators: {
+                include: {
+                    user:true
                 }
             }
         }
     }
-});
+   }
+  });
 
-     return organizations
+  return organizations.map(org => {
+    const isOwner = org.ownerId === userId;
+
+   
+    const collaborators = org.projects.flatMap(p =>
+      p.collaborators.map(c => ({
+        id: c.user.id,
+        email: c.user.email,
+        avatar: c.user.avatar,
+        role: c.role
+      }))
+    );
+
+    return {
+      id: org.id,
+      name: org.name,
+      role: isOwner ? "owner" : "collaborator",
+      collaborators,
+      collaboratorCount: collaborators.length
+    };
+  });
 }
-
 
 export async function updateResources(data: UpdateOrganizations){
       

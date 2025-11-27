@@ -32,12 +32,12 @@ export async function createProjects(req:Request, res:Response){
 
 export async function getAllProjects(req:Request, res:Response){
 
-    const ownerId = req.userId
-    const organizationsId = parseInt(req.params.organizationsId)
+    const userId = req.userId
+    const organizationId = parseInt(req.params.organizationId)
     
 
     try {
-        const projects = await findResources({ownerId : Number(ownerId), organizationsId})
+        const projects = await findResources({userId : Number(userId), organizationId})
 
         return res.json({success : true, data:projects})
     } catch (err) {

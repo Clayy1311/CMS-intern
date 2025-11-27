@@ -10,7 +10,7 @@ export const authMiddleware = (req:Request, res:Response, next:NextFunction) => 
         const decoded = jwt.verify(token, jwtSecret);
 
         if (typeof decoded === "object" && "id" in decoded) {
-      req.userId = Number(decoded.id);
+      req.userId = Number(decoded.id);  
       next();
     } else {
       return res.status(403).json({ error: "Invalid token payload" });

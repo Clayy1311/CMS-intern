@@ -6,8 +6,8 @@ export interface CreateProjects {
 
 
 export interface FindProjects {
-    ownerId: number,
-    organizationsId : number
+    userId: number,
+    organizationId : number
 }
 
 

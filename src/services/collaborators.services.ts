@@ -1,7 +1,7 @@
 import { connect } from "http2";
 import prisma from "../db";
 import { AddCollaborators, DeleteCollaborators, EditCollaborators, FindAllCollaborators } from "../types/collaborators";
-
+import { AllUser } from "../types/auth.types";
 export async function createResource(data:AddCollaborators){
      const {projectId, userId, ownerId}  = data
 
@@ -57,7 +57,7 @@ export async function editResource(data:EditCollaborators){
 
 
 export async function findResource(data:FindAllCollaborators){
-    const {projectId, ownerId} = data
+    const {projectId, userId} = data
 
     const existingProject = await prisma.projects.findUnique({
         where : {id:projectId},
@@ -66,9 +66,21 @@ export async function findResource(data:FindAllCollaborators){
 
     if(!existingProject) throw new Error("Project Not Found")
 
-    if(existingProject.organization.ownerId !== ownerId){
-        throw new Error("you don't have to authorize")
-    }
+    //check if owner
+    const isOwner = existingProject.organization.ownerId === userId;
+
+     //check if collaborator
+       const isCollaborator = await prisma.projects.findFirst({
+        where : {
+            collaborators: {
+                some: {userId}
+            }
+        }
+       });
+
+       if(!isOwner && !isCollaborator){
+           throw new Error("You dont have authorize")
+       }
 
     const collaborators = await prisma.collaborators.findMany({
         where : {projectId: projectId},
@@ -101,4 +113,13 @@ export async function deleteResource(data:DeleteCollaborators){
     })
 
     return collaborators
+}
+
+//get all user for invite
+
+export async function getAllUser(projectId : Number){
+
+
+   const user = await prisma.users.findMany();
+   return user
 }
