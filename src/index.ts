@@ -10,6 +10,7 @@ import { organizationAccess } from "./middlewares/organizationMiddleware";
 import organizationsRoutes from "./routes/organizations.routes";
 import projectsRoutes from "./routes/projects.routes";
 import collaboratorsRoutes from "./routes/collaborators.routes";
+import personalProjectsRoutes from "./routes/personalProjects.routes";
 import cors from 'cors';
 const app = express();
 
@@ -28,8 +29,8 @@ app.use("/api/auth", authUser);
 app.use("/api/g", authMiddleware,userData);
 app.use("/api/dashboard", authMiddleware, profile, home);
 
-//Organizations //projects //Collaborators
-app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes)
+//Organizations //projects //Collaborators //personalProjects
+app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
 const PORT = process.env.PORT || 3000;
 
 
