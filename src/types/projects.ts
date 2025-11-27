@@ -23,3 +23,10 @@ export interface DeleteProject {
     organizationsId : number,
     ownerId : number
 }
+
+
+export interface InformationProject {
+    projectId : number,
+    userId : number,
+  
+}

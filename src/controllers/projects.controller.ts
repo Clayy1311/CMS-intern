@@ -1,5 +1,5 @@
 
-import { createResources, findResources, updateResources, deleteResources } from "../services/projects.services";
+import { createResources, findResources, updateResources, deleteResources, infoProject } from "../services/projects.services";
 import { Request, Response } from "express";
 
 
@@ -87,4 +87,15 @@ export async function deleteProjects(req:Request, res:Response){
          return res.status(500).json({error : err.message})
       }
     }
+}
+
+
+export async function detailInfoProject(req:Request, res:Response){
+
+    const userId = req.userId
+    const projectId = parseInt(req.params.projectId)
+
+    const allInfoProject = await infoProject({projectId, userId:Number(userId)})
+
+    return res.json({success : true, data: allInfoProject})
 }
