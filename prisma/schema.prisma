@@ -28,6 +28,7 @@ model Users {
 
   ownedOrganizations Organizations[] @relation("UserOrganizations")
   collaborations     Collaborators[]
+  ownedProjects     PersonalProjects[] @relation("UserProjects")
 }
 
 model Organizations {
@@ -66,3 +67,15 @@ model Collaborators {
   user        Users     @relation(fields: [userId], references: [id])
 }
 
+model PersonalProjects {
+  id Int @id @default(autoincrement())
+  ownerId Int
+  name String
+  status String @default("Progress")
+  customDomain String?
+  lastUpdated DateTime  @default(now())
+  createdAt DateTime  @default(now())
+
+
+  owner Users @relation("UserProjects", fields: [ownerId], references: [id])
+}
