@@ -7,7 +7,7 @@ const router = Router()
 
 router.post("/projects/:id", createProjects)
 router.get("/project/:projectId", detailInfoProject )
-router.get("/project/:organizationId", organizationAccess, getAllProjects)
+router.get("/project/get-all/:organizationId", organizationAccess, getAllProjects)
 router.patch("/organization/:organizationsId/project/:id", updateProjects)
 router.delete("/organization/:organizationsId/project/:id", deleteProjects)
 //ket : id ngambil dari field organizationsId dari tabel projects berelasi dengan tabel organizations
