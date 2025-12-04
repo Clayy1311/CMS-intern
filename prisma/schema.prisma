@@ -118,6 +118,7 @@ model ContentFields {
 
   relationType String?  // one-to-one, one-to-many, many-to-many
   relationContentModelId Int? // points to another ContentModels.id
+  contentValues ContentValues[]
 
   contentModel ContentModels @relation(fields: [contentModelId], references: [id])
   relatedModel ContentModels? @relation("FieldRelation", fields: [relationContentModelId], references: [id])
@@ -138,6 +139,8 @@ model ContentEntries {
   slug String?
   createdBy Int
   updatedBy Int?
+  contentValues ContentValues[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -145,4 +148,19 @@ model ContentEntries {
   organizationProject Projects? @relation(fields: [projectOrgId], references:[id])
   personalProjects  PersonalProjects? @relation(fields: [projectPersonalId], references:[id]) 
 
+}
+
+model ContentValues {
+  id Int @id @default(autoincrement())
+  contentEntryId Int
+  contentFieldId Int
+
+  valueText String?
+  valueNumber Float?
+  valueBool Boolean?
+  valueDate Json? //  rich text / blocks / images / arrays
+  valueRefId Int? // relation
+
+  contentEntry ContentEntries @relation(fields: [contentEntryId], references:[id])
+  contentField ContentFields @relation(fields: [contentFieldId], references:[id])
 }
