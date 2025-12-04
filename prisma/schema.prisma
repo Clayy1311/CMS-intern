@@ -54,6 +54,9 @@ model Projects {
   organization    Organizations @relation(fields: [organizationId], references: [id])
   collaborators   Collaborators[]
   contentModels   ContentModels[]
+  ContentEntries   ContentEntries[]
+
+
 }
 
 model Collaborators {
@@ -80,6 +83,7 @@ model PersonalProjects {
 
   owner Users @relation("UserProjects", fields: [ownerId], references: [id])
   contentModels   ContentModels[]
+   ContentEntries   ContentEntries[]
 }
 
 model ContentModels {
@@ -97,6 +101,7 @@ model ContentModels {
   personalProjects  PersonalProjects? @relation(fields: [projectPersonalId], references:[id]) 
   contentFields ContentFields[]
   fieldsRelated ContentFields[] @relation("FieldRelation")
+  contentEntries ContentEntries[]
 }
 
 model ContentFields {
@@ -120,5 +125,24 @@ model ContentFields {
    createdAt DateTime @default(now())
   
 
+
+}
+
+model ContentEntries {
+  id Int @id @default(autoincrement())
+  contentModelId Int
+    projectOrgId Int?
+  projectPersonalId Int?
+  projectType String // "org" or "personal"
+  status String @default("draft")
+  slug String?
+  createdBy Int
+  updatedBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  contentModel ContentModels @relation(fields: [contentModelId], references: [id])
+  organizationProject Projects? @relation(fields: [projectOrgId], references:[id])
+  personalProjects  PersonalProjects? @relation(fields: [projectPersonalId], references:[id]) 
 
 }
