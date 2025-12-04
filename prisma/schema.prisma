@@ -48,11 +48,12 @@ model Projects {
   name            String
   status          String    @default("Progress")
   customDomain    String? 
-  lastUpdated     DateTime  @default(now())
+  lastUpdated     DateTime  @updatedAt
   createdAt       DateTime  @default(now())
 
   organization    Organizations @relation(fields: [organizationId], references: [id])
   collaborators   Collaborators[]
+  contentModels   ContentModels[]
 }
 
 model Collaborators {
@@ -73,9 +74,51 @@ model PersonalProjects {
   name String
   status String @default("Progress")
   customDomain String?
-  lastUpdated DateTime  @default(now())
+  lastUpdated DateTime  @updatedAt
   createdAt DateTime  @default(now())
 
 
   owner Users @relation("UserProjects", fields: [ownerId], references: [id])
+  contentModels   ContentModels[]
+}
+
+model ContentModels {
+  id Int @id @default(autoincrement())
+  projectOrgId Int?
+  projectPersonalId Int?
+  projectType String // "org" or "personal"
+  name String
+  apiKey String @unique  // e.g. "blog", "product", "landing_page"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  organizationProject Projects? @relation(fields: [projectOrgId], references:[id])
+  personalProjects  PersonalProjects? @relation(fields: [projectPersonalId], references:[id]) 
+  contentFields ContentFields[]
+  fieldsRelated ContentFields[] @relation("FieldRelation")
+}
+
+model ContentFields {
+  id Int  @id @default(autoincrement())
+  contentModelId Int
+  name String
+  key String
+  type String
+  required  Boolean @default(false)
+  unique Boolean @default(false)
+  order Int @default(0)
+
+  validation Json?
+
+  relationType String?  // one-to-one, one-to-many, many-to-many
+  relationContentModelId Int? // points to another ContentModels.id
+
+  contentModel ContentModels @relation(fields: [contentModelId], references: [id])
+  relatedModel ContentModels? @relation("FieldRelation", fields: [relationContentModelId], references: [id])
+
+   createdAt DateTime @default(now())
+  
+
+
 }
