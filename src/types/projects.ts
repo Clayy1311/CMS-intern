@@ -15,11 +15,11 @@ export interface UpdateProjects {
      name: string,
     organizationsId : number,
     ownerId : number,
-    id : number
+    projectId : number
 }
 
 export interface DeleteProject {
-    id: number,
+    projectId: number,
     organizationsId : number,
     ownerId : number
 }

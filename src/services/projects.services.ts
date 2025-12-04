@@ -78,7 +78,7 @@ if(!existingOrg) throw new Error("Organizations Not Found");
     
 
 export async function updateResources(data: UpdateProjects){
-    const {name, organizationsId, ownerId, id} = data
+    const {name, organizationsId, ownerId, projectId} = data
 
     const existingOrg = await prisma.organizations.findUnique({where : {id : organizationsId}})
     if(!existingOrg) throw new Error("organization not found")
@@ -87,12 +87,12 @@ export async function updateResources(data: UpdateProjects){
         throw new Error("you dont have authorize")
     }
       const existingProject = await prisma.projects.findUnique({
-    where: { id },
+    where: { id: projectId },
   });
   if (!existingProject) throw new Error("Project not found");
 
     const project = await prisma.projects.update({
-        where : {id},
+        where : {id: projectId},
         data: {
             name
         },
@@ -103,18 +103,26 @@ export async function updateResources(data: UpdateProjects){
 }
 
 export async function deleteResources(data: DeleteProject){
-    const {id, ownerId, organizationsId} = data
+    const {projectId, ownerId, organizationsId} = data
 
     const existingOrg = await prisma.organizations.findUnique({where : {id : organizationsId}})
 
    if(!existingOrg) throw new Error("organizations not found")
 
-   if(existingOrg.ownerId !== ownerId){
-    throw new Error("You dont have Authorize")
-   }
+   const existingProject = await prisma.projects.findUnique({
+    where: { id: projectId },
+  });
 
+  if (!existingProject) {
+    throw new Error("Project not found");
+  }
+  
+    if(existingOrg.ownerId !== ownerId){
+        throw new Error("you dont have authorize")
+    }
+ 
    const projects = await prisma.projects.delete({
-    where : {id},
+    where : {id: projectId},
    })
 
    return projects

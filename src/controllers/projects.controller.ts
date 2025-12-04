@@ -52,16 +52,16 @@ export async function updateProjects(req:Request, res:Response){
 
     const {name} = req.body
      
-    const id = parseInt(req.params.id)
+    const projectId = parseInt(req.params.projectId)
     const ownerId = req.userId
-    let organizationsId = parseInt(req.params.id)
+    let organizationsId = parseInt(req.params.organizationsId)
 
     if(!name) {
         return res.status(400).json({message : "Empty Name"})
     }
     
     try {
-     const project = await updateResources({id, ownerId: Number(ownerId), organizationsId, name})
+     const project = await updateResources({projectId, ownerId: Number(ownerId), organizationsId, name})
      
     return res.json({success : true, data: project})
     } catch (err) {
@@ -74,12 +74,12 @@ export async function updateProjects(req:Request, res:Response){
 }
 
 export async function deleteProjects(req:Request, res:Response){
-    const id =  parseInt(req.params.id)
+    const projectId =  parseInt(req.params.projectId)
     const ownerId = req.userId
     const organizationsId = parseInt(req.params.organizationsId)
 
     try {
-        const projects = await deleteResources({id, ownerId : Number(ownerId), organizationsId})
+        const projects = await deleteResources({projectId, ownerId : Number(ownerId), organizationsId})
 
         return res.json({success: true, message: "Delete Successfully", data: projects})
     } catch (err) {

@@ -63,7 +63,7 @@ model Collaborators {
   status      String    @default("active")       // active, pending, etc.
   createdAt   DateTime  @default(now())
 
-  project     Projects  @relation(fields: [projectId], references: [id])
+   project   Projects  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   user        Users     @relation(fields: [userId], references: [id])
 }
 

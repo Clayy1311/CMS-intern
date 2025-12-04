@@ -8,7 +8,7 @@ const router = Router()
 router.post("/projects/:id", createProjects)
 router.get("/project/:projectId", detailInfoProject )
 router.get("/project/get-all/:organizationId", organizationAccess, getAllProjects)
-router.patch("/organization/:organizationsId/project/:id", updateProjects)
-router.delete("/organization/:organizationsId/project/:id", deleteProjects)
+router.patch("/organization/:organizationsId/project/:projectId", updateProjects)
+router.delete("/organization/:organizationsId/project/:projectId", deleteProjects)
 //ket : id ngambil dari field organizationsId dari tabel projects berelasi dengan tabel organizations
 export default router;
