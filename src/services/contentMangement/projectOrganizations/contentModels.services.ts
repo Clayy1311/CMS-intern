@@ -1,6 +1,6 @@
 import prisma from "../../../db";
 import { CreateContentModel } from "../../../types/personalProjects";
-
+import { UpdateContentModel } from "../../../types/projects";
 export async function getContentModel(){
 
 
@@ -48,10 +48,37 @@ export async function detailContentModel(contentModelId:number){
             name : true,
             apiKey: true,
             createdAt: true,
-            updatedAt:true
+           
         }
     })
 
     return contentModel
    
+}
+
+export async function editContentModel(data:UpdateContentModel){
+
+    const {contentModelId, apiKey,name} = data
+
+    const contentModel =await prisma.contentModels.update({
+        where : {
+            id : contentModelId
+        }, data : {
+            name,
+            apiKey
+        }
+    })
+
+    return contentModel
+}
+
+export async function destroyContentModel(contentModelId:number){
+
+    const contentModel = await prisma.contentModels.delete({
+        where : {
+            id : contentModelId
+        }
+    })
+
+    return contentModel
 }

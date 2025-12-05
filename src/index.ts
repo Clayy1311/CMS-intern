@@ -12,7 +12,7 @@ import projectsRoutes from "./routes/projects.routes";
 import collaboratorsRoutes from "./routes/collaborators.routes";
 import personalProjectsRoutes from "./routes/personalProjects.routes";
 import organizationsContentModelsRoutes from "./routes/contentMangement/projectsOrganizations/contentModels.routes";
-import { orgProjectAccess } from "./middlewares/organizationalProjectAccess";
+
 import cors from 'cors';
 const app = express();
 

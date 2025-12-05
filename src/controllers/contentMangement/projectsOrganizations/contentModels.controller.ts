@@ -1,4 +1,4 @@
-import { createContentModel, showContentModel,detailContentModel } from "../../../services/contentMangement/projectOrganizations/contentModels.services";
+import { createContentModel, showContentModel,detailContentModel, editContentModel, destroyContentModel } from "../../../services/contentMangement/projectOrganizations/contentModels.services";
 import { Request, Response } from "express";
 
 
@@ -48,4 +48,40 @@ export async function infoContentModel(req:Request, res:Response){
         }
     }
 
+}
+
+export async function updateContentModel(req:Request, res:Response){
+    try {
+         const contentModelId = Number(req.params.contentModelId)
+         const {apiKey, name} = req.body
+         const contentModel = await editContentModel({apiKey, name, contentModelId})
+
+         if(!apiKey){
+            return res.status(403).json({message : "apiKey Required"})
+         }
+
+         if(!name){
+             return res.status(403).json({message : "name Required"})
+         }
+
+         return res.json({success : true, data: contentModel})
+    } catch (err) {
+        if(err instanceof Error){
+            return res.status(500).json({error : err.message})
+        }
+    }
+}
+
+export async function deleteContentModel(req:Request, res:Response){
+ try {
+         const contentModelId = Number(req.params.contentModelId)
+
+         const contentModel = await destroyContentModel(contentModelId)
+
+         return res.json({success: true, data:contentModel})
+ }  catch (err) {
+        if(err instanceof Error){
+            return res.status(500).json({error : err.message})
+        }
+    }
 }
