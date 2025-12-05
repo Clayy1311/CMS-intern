@@ -1,4 +1,4 @@
-import { createContentModel, showContentModel } from "../../../services/contentMangement/projectOrganizations/contentModels.services";
+import { createContentModel, showContentModel,detailContentModel } from "../../../services/contentMangement/projectOrganizations/contentModels.services";
 import { Request, Response } from "express";
 
 
@@ -34,13 +34,18 @@ export async function indexContentModel(req:Request, res:Response){
     }
 }
 
-export async function detailContentModel(req:Request, res:Response){
+export async function infoContentModel(req:Request, res:Response){
     try {
-        const projectId = Number(req.params.projectId)
+        
         const contentModelId = Number(req.params.contentModelId)
 
+        const contentModel = await detailContentModel(contentModelId)
        
-    } catch (error) {
-        
+        return res.json({sucess: true, data:contentModel})
+     } catch (err) {
+        if(err instanceof Error){
+            return res.status(500).json({error : err.message})
+        }
     }
+
 }

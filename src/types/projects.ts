@@ -31,9 +31,3 @@ export interface InformationProject {
   
 }
 
-
-export interface DetailContentModel{
-   
-    contentModelId: number
-   
-}

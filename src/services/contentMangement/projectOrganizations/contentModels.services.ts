@@ -1,6 +1,6 @@
 import prisma from "../../../db";
 import { CreateContentModel } from "../../../types/personalProjects";
-import { DetailContentModel } from "../../../types/projects";
+
 export async function getContentModel(){
 
 
@@ -36,9 +36,9 @@ export async function showContentModel(projectId: number){
 }
 
 
-export async function detailContentModel(data:DetailContentModel){
+export async function detailContentModel(contentModelId:number){
 
-    const {contentModelId} = data
+   
 
     const contentModel = await prisma.contentModels.findMany({
         where : {
