@@ -17,3 +17,14 @@ export interface DeletePersonalProject{
   ownerId : number,
   projectId : number
 }
+
+
+//content management
+
+
+export interface CreateContentModel{
+  projectId : number,
+  name : string,
+  apiKey: string,
+
+}

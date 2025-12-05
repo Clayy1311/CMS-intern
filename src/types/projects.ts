@@ -30,3 +30,10 @@ export interface InformationProject {
     userId : number,
   
 }
+
+
+export interface DetailContentModel{
+   
+    contentModelId: number
+   
+}
