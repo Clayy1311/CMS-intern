@@ -90,7 +90,7 @@ model ContentModels {
   id Int @id @default(autoincrement())
   projectOrgId Int?
   projectPersonalId Int?
-  projectType String // "org" or "personal"
+  projectType String? // "org" or "personal"
   name String
   apiKey String @unique  // e.g. "blog", "product", "landing_page"
   createdAt DateTime @default(now())
@@ -140,7 +140,7 @@ model ContentEntries {
   createdBy Int
   updatedBy Int?
   contentValues ContentValues[]
-  contentSEO  ContentSEO[]
+  contentSEO  ContentSEO?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -159,7 +159,7 @@ model ContentValues {
   valueText String?
   valueNumber Float?
   valueBool Boolean?
-  valueDate Json? //  rich text / blocks / images / arrays
+  valueDate DateTime? //  rich text / blocks / images / arrays
   valueRefId Int? // relation
   
 
