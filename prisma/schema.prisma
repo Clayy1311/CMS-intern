@@ -51,7 +51,7 @@ model Projects {
   lastUpdated     DateTime  @updatedAt
   createdAt       DateTime  @default(now())
 
-  organization    Organizations @relation(fields: [organizationId], references: [id])
+  organization    Organizations @relation(fields: [organizationId], references: [id],onDelete: Cascade)
   collaborators   Collaborators[]
   contentModels   ContentModels[]
   ContentEntries   ContentEntries[]
