@@ -37,3 +37,35 @@ export interface UpdateContentModel{
     apiKey:string,
     name: string,
 }
+
+
+//contentFields
+
+export interface CreateContentField {
+  contentModelId: number;
+  name: string;
+  key: string;
+  type: string;
+  required?: boolean;
+  unique?: boolean;
+  order?: number;
+  validation?: any; 
+  relationType?: string; 
+  relationContentModelId?: number;
+}
+export interface UpdateContentField {
+  contentFieldId: number;
+  name?: string;
+  key?: string;
+  type?: string;
+  required?: boolean;
+  unique?: boolean;
+  order?: number;
+  validation?: any;
+  relationType?: string;
+  relationContentModelId?: number;
+}
+
+export interface DeleteContentField{
+    contentFieldId : number
+}
