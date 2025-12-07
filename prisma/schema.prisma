@@ -132,9 +132,8 @@ model ContentFields {
 model ContentEntries {
   id Int @id @default(autoincrement())
   contentModelId Int
-    projectOrgId Int?
+   projectOrgId Int?
   projectPersonalId Int?
-  projectType String // "org" or "personal"
   status String @default("draft")
   slug String?
   createdBy Int
@@ -165,6 +164,8 @@ model ContentValues {
 
   contentEntry ContentEntries @relation(fields: [contentEntryId], references:[id])
   contentField ContentFields @relation(fields: [contentFieldId], references:[id])
+  @@unique([contentEntryId, contentFieldId])
+
 }
 
 model ContentSEO {

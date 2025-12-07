@@ -13,6 +13,7 @@ import collaboratorsRoutes from "./routes/collaborators.routes";
 import personalProjectsRoutes from "./routes/personalProjects.routes";
 import organizationsContentModelsRoutes from "./routes/contentMangement/projectsOrganizations/contentModels.routes";
 import organizationsContentFieldsRoutes from "./routes/contentMangement/projectsOrganizations/contentField.routes";
+import organizationContentEntriesRoutes from "./routes/contentMangement/projectsOrganizations/contentEntries.routes";
 import cors from 'cors';
 const app = express();
 
@@ -34,7 +35,7 @@ app.use("/api/dashboard", authMiddleware, profile, home);
 //Organizations //projects //Collaborators //personalProjects
 app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
 
-app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes)
+app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes)
 const PORT = process.env.PORT || 3000;
 
 

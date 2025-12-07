@@ -69,3 +69,37 @@ export interface UpdateContentField {
 export interface DeleteContentField{
     contentFieldId : number
 }
+
+//Content Entries
+export interface CreateContentEntries{
+    contentModelId : number,
+    projectId : number,
+    createdBy : number,
+    slug? : string,
+    contentValues : Array<{
+      contentFieldId: number;
+      contentValue: any;
+    }>;
+}
+
+
+export interface UpdateContentEntries{
+    contentEntryId : number,
+    projectId : number,
+    slug? : string,
+    status? : string,
+    updatedBy : number
+     contentValues : Array<{
+      contentFieldId: number;
+      contentValue: any;
+    }>;
+}
+
+export interface GetContentEntries{
+    contentEntryId : number,
+
+}
+
+export interface DeleteContentEntries{
+    contentEntryId : number
+}
