@@ -103,3 +103,18 @@ export interface GetContentEntries{
 export interface DeleteContentEntries{
     contentEntryId : number
 }
+
+export interface UpsertSEO{
+    contentEntryId : number,
+    seoTitle : string,
+    metaDesc: string,
+    keywords : string,
+    ogImage : string,
+   twitterImage : string
+}
+
+
+export interface GetSEO{
+    contentEntryId : number,
+
+}
