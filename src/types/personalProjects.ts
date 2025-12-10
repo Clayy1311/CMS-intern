@@ -23,8 +23,22 @@ export interface DeletePersonalProject{
 
 
 export interface CreateContentModel{
-  projectId : number,
+  personalProjectId : number,
   name : string,
   apiKey: string,
 
+}
+
+export interface GetContentModel{
+  personalProjectId : number
+}
+
+export interface UpdateContentModel{
+    contentModelId: number,
+    apiKey:string,
+    name: string,
+}
+
+export interface DeleteContentModel{
+  contentModelId : number
 }

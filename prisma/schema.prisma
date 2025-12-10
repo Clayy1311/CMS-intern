@@ -88,9 +88,8 @@ model PersonalProjects {
 
 model ContentModels {
   id Int @id @default(autoincrement())
-  projectOrgId Int?
-  projectPersonalId Int?
-  projectType String? // "org" or "personal"
+  projectOrgId Int? // "org" 
+  projectPersonalId Int? //  "personal"
   name String
   apiKey String @unique  // e.g. "blog", "product", "landing_page"
   createdAt DateTime @default(now())

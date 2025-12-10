@@ -1,5 +1,5 @@
 import prisma from "../../../db";
-import { CreateContentModel } from "../../../types/personalProjects";
+import { CreateContentModel } from "../../../types/projects";
 import { UpdateContentModel } from "../../../types/projects";
 export async function getContentModel(){
 

@@ -32,6 +32,14 @@ export interface InformationProject {
 }
 
 
+export interface CreateContentModel{
+  projectId : number,
+  name : string,
+  apiKey: string,
+
+}
+
+
 export interface UpdateContentModel{
     contentModelId: number,
     apiKey:string,
