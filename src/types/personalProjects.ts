@@ -21,7 +21,7 @@ export interface DeletePersonalProject{
 
 //content management
 
-
+// content models
 export interface CreateContentModel{
   personalProjectId : number,
   name : string,
@@ -41,4 +41,36 @@ export interface UpdateContentModel{
 
 export interface DeleteContentModel{
   contentModelId : number
+}
+
+// content fields
+
+export interface CreateContentField{
+  contentModelId: number;
+  name: string;
+  key: string;
+  type: string;
+  required?: boolean;
+  unique?: boolean;
+  order?: number;
+  validation?: any; 
+  relationType?: string; 
+  relationContentModelId?: number;
+}
+
+export interface UpdateContentField {
+  contentFieldId: number;
+  name?: string;
+  key?: string;
+  type?: string;
+  required?: boolean;
+  unique?: boolean;
+  order?: number;
+  validation?: any;
+  relationType?: string;
+  relationContentModelId?: number;
+}
+
+export interface DeleteContentField{
+    contentFieldId : number
 }

@@ -16,6 +16,7 @@ import organizationsContentFieldsRoutes from "./routes/contentMangement/projects
 import organizationContentEntriesRoutes from "./routes/contentMangement/projectsOrganizations/contentEntries.routes";
 import organizationContentSEORoutes from "./routes/contentMangement/projectsOrganizations/contentSEO.routes";
 import personalContentModelsRoute from "./routes/contentMangement/personalProjects/contentModels.routes";
+import personalFieldRoute from "./routes/contentMangement/personalProjects/contentFields.routes";
 import cors from 'cors';
 const app = express();
 
@@ -37,7 +38,7 @@ app.use("/api/dashboard", authMiddleware, profile, home);
 //Organizations //projects //Collaborators //personalProjects
 app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
 
-app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute)
+app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute)
 const PORT = process.env.PORT || 3000;
 
 
