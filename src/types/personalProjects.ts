@@ -74,3 +74,52 @@ export interface UpdateContentField {
 export interface DeleteContentField{
     contentFieldId : number
 }
+
+//Content Entries
+export interface CreateContentEntries{
+    contentModelId : number,
+    personalProjectId : number
+    createdBy : number,
+    slug? : string,
+    contentValues : Array<{
+      contentFieldId: number;
+      contentValue: any;
+    }>;
+}
+
+
+export interface UpdateContentEntries{
+    contentEntryId : number,
+    personalProjectId : number
+    slug? : string,
+    status? : string,
+    updatedBy : number
+     contentValues : Array<{
+      contentFieldId: number;
+      contentValue: any;
+    }>;
+}
+
+export interface GetContentEntries{
+    contentEntryId : number,
+
+}
+
+export interface DeleteContentEntries{
+    contentEntryId : number
+}
+
+export interface UpsertSEO{
+    contentEntryId : number,
+    seoTitle : string,
+    metaDesc: string,
+    keywords : string,
+    ogImage : string,
+   twitterImage : string
+}
+
+
+export interface GetSEO{
+    contentEntryId : number,
+
+}

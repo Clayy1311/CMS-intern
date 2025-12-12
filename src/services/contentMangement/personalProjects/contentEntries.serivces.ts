@@ -1,15 +1,17 @@
 import prisma from "../../../db";
-import { CreateContentEntries, DeleteContentEntries, GetContentEntries, UpdateContentEntries } from "../../../types/projects";
+import { CreateContentEntries, UpdateContentEntries, DeleteContentEntries, GetContentEntries,  } from "../../../types/personalProjects";
+
+
 
 export async function createContentEntry(data: CreateContentEntries){
 
     const createEntry = await prisma.contentEntries.create({
         data : {
             contentModelId : data.contentModelId,
-            projectOrgId : data.projectId,
+            projectPersonalId : data.personalProjectId,
             createdBy : data.createdBy,
-            slug: data.slug,
-            contentValues : {
+            slug : data.slug,
+             contentValues : {
                 create : data.contentValues.map((v) => ({
                     contentFieldId: v.contentFieldId,
                     valueText: typeof v.contentValue === "string" ? v.contentValue : null,
@@ -20,21 +22,22 @@ export async function createContentEntry(data: CreateContentEntries){
                 ? v.contentValue.refId
                 : null,
                 }))
-            }
-        }, include :{
-            contentValues: true
+            },
+            
+        }, include : {
+            contentValues : true,
         }
+
     })
-
     return createEntry
-}
 
+}
 
 export async function editContentEntry(data: UpdateContentEntries){
 
-    const updateContentEntry = await prisma.contentEntries.update({
-        where : {
-            id : data.contentEntryId,
+    const editEntry = await prisma.contentEntries.update({
+        where: {
+            id : data.contentEntryId
         },data: {
             slug: data.slug,
             status: data.status,
@@ -81,25 +84,10 @@ export async function editContentEntry(data: UpdateContentEntries){
       }
     }
 
-    return updateContentEntry;
+    return editEntry;
   }
 
-
-  export async function getContentEntry(data: GetContentEntries){
-
-    const indexContentEntry = await prisma.contentEntries.findUnique({
-      where: {
-        id : data.contentEntryId
-      }, include : {
-        contentValues: true,
-        contentSEO: true
-      }
-    })
-
-    return indexContentEntry
-  }
-
-  export async function destroyContentEntry(data: DeleteContentEntries){
+export async function destroyContentEntry(data: DeleteContentEntries){
 const transaction = await prisma.$transaction([
  prisma.contentValues.deleteMany({
        where : {
@@ -120,3 +108,15 @@ const transaction = await prisma.$transaction([
   return transaction
    
   }
+
+export async function getContentEntry(data: GetContentEntries){
+
+    const getEntry = await prisma.contentEntries.findMany({
+        where : {
+            id : data.contentEntryId
+        }
+    })
+
+    return getEntry
+}
+
