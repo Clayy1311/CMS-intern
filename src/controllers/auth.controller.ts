@@ -79,9 +79,28 @@ export async function login(req:Request, res:Response){
   return res.status(400).json({ error: "Password and Email is required" });
 }
   
-const {token, refreshToken} = await loginUser({email, password})
+const {accessToken, refreshToken} = await loginUser({email, password})
 
-        res.json({ message : "Login Successful", token, refreshToken});
+        res.cookie("accessToken", accessToken, {
+          httpOnly : true,
+          secure : process.env.NODE_ENV === "production",
+          path : "/",
+          sameSite : "lax",
+          maxAge : 15 * 60 * 1000, //15 minute
+
+        })
+
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly : true,
+          secure : process.env.NODE_ENV === "production",
+          path : "/",
+          sameSite : "lax",
+          maxAge : 7 * 24 * 60 * 60 * 1000, //7 days
+        })
+
+          return res.status(200).json({
+      message: "Login successful",
+    });
     } catch (err: unknown) {
    
     if (err instanceof Error) {
@@ -172,6 +191,8 @@ export async function logout(req:Request, res:Response){
       return res.status(401).json({ error: "Unauthorized" });
     }
   const user = await logoutUser({userId})
+   res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
 
 res.json({ message : "Logout Successfully", user})
  }catch(err: unknown){

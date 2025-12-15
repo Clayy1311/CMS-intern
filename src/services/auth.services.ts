@@ -102,7 +102,7 @@ const isValid = await bcrypt.compare(password, user.password);
     const jwtSecret = process.env.JWT_SECRET
 
     if(!jwtSecret) throw new Error("JWT_SECRET is not defined in environment variables")
-    const token = jwt.sign({ id: user.id }, jwtSecret, {
+    const accessToken = jwt.sign({ id: user.id }, jwtSecret, {
       expiresIn: "15m",
     });
 
@@ -117,7 +117,12 @@ const isValid = await bcrypt.compare(password, user.password);
       where: { id: user.id },
       data: { refreshToken },
     });
-return {token, refreshToken}
+return {accessToken, refreshToken, 
+  user : {
+    id : user.id,
+    email: user.email
+  }
+}
 }
 
 
