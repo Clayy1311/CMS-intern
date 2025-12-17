@@ -14,8 +14,10 @@ export interface Review{
 }
 
 
+
 export interface SchedulePublish{
     contentEntryId : number,
     userId : number,
     scheduledAt : Date  
 }
+

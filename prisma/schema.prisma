@@ -143,6 +143,7 @@ model ContentEntries {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   scheduledAt DateTime?
+  publishedAt DateTime?
   
   contentModel ContentModels @relation(fields: [contentModelId], references: [id])
   organizationProject Projects? @relation(fields: [projectOrgId], references:[id])
