@@ -12,10 +12,8 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/auth/login", req.url));
     }
   }
-
   return NextResponse.next();
 }
-
 export const config = {
     matcher: ["/dashboard", "/dashboard/:path*"],
   };
