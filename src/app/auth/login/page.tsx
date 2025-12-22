@@ -1,5 +1,5 @@
 // src/app/(auth)/login/page.tsx
-import LoginForm from "@/components/features/LoginForm";
+import LoginForm from "@/components/features/auth/LoginForm";
 import Image from "next/image"; // Untuk mengoptimalkan gambar
 
 // Kita asumsikan ini adalah Route Group (auth)

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
-import { Switch } from "../ui/switch";
+import { Switch } from "../../ui/switch";
 import { Register } from "@/service/auth.service";
 
 export default function RegisterPage() {
@@ -153,9 +153,6 @@ export default function RegisterPage() {
                         </p>
                     </Label>
                 </div>
-
-
-
                 <Button className="w-full bg-[#3A7AC3] py-2" type="submit">
                     Register
                 </Button>

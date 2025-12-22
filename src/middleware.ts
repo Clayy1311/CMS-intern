@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("accessToken");
-
   console.log("PATH:", req.nextUrl.pathname);
   console.log("COOKIE:", accessToken?.value);
   if (req.nextUrl.pathname.startsWith("/dashboard")) {

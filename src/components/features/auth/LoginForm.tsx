@@ -13,11 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
-import { Switch } from "../ui/switch";
+import { Switch } from "../../ui/switch";
 export default function LoginForm() {
     const router = useRouter();
-
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -53,8 +51,6 @@ export default function LoginForm() {
         }
     }
 
-
-
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative flex items-center">
@@ -74,7 +70,6 @@ export default function LoginForm() {
                     {submitError}
                 </p>
             )}
-            {/* FIELD EMAIL */}
             <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -87,8 +82,6 @@ export default function LoginForm() {
                     className="h-12 bg-blue-50 border-gray-200"
                 />
             </div>
-
-            {/* FIELD PASSWORD (Dengan Toggle Mata) */}
             <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
@@ -140,7 +133,6 @@ export default function LoginForm() {
             </Button>
             <GoogleLogin
                 onSuccess={handleGoogle}
-
             />
 
             <p className="text-center text-sm text-gray-500 mt-4">
