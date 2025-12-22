@@ -1,3 +1,3 @@
-export interface organiaztion{
+export interface organization{
 name: string,
 }
