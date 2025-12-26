@@ -99,7 +99,7 @@ export default function OrganizationClient() {
     const [open, setOpen] = useState(false);
     const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
 
-    // 🔹 FETCH DATA (SATU SUMBER)
+    
     const fetchOrganization = async () => {
         const res = await fetch("http://localhost:3001/api/resources/all", {
             credentials: "include",
@@ -125,7 +125,7 @@ export default function OrganizationClient() {
     };
 
     
-const handleDelete = async (org: Organization) => {
+   const handleDelete = async (org: Organization) => {
     const confirmDelete = confirm(
       `Yakin hapus organization "${org.name}"?`
     );
@@ -134,7 +134,7 @@ const handleDelete = async (org: Organization) => {
   
     try {
       await handleDeleteService(org.id);
-      await fetchOrganization(); // 🔥 refresh data TANPA reload
+      await fetchOrganization(); 
     } catch (err) {
       console.error(err);
       alert("Gagal menghapus data");
@@ -145,7 +145,7 @@ const handleDelete = async (org: Organization) => {
         <main>
             <h1>Organizational Project</h1>
 
-            <section className="min-h-screen bg-white px-15">
+            <section className="min-h-screen bg-white px-15 py-12">
                 <SearchInput onCreateClick={handleCreate} />
 
                 <CreateProjectModal

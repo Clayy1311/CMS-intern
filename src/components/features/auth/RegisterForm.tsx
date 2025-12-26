@@ -28,7 +28,7 @@ export default function RegisterPage() {
         e.preventDefault();
         setLoading(true);
         setSubmitError(null);
-
+ 
         try{
             await Register({ fullName, company, email, job, country, password });
             router.push("/dashboard");

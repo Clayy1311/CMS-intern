@@ -37,9 +37,7 @@ export default function CreateProjectModal({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const isEdit = !!organization;
-
-  // 🔹 ISI FORM SAAT EDIT
+  const isEdit = !!organization;  
   useEffect(() => {
     if (organization) {
       setName(organization.name);
@@ -52,7 +50,7 @@ export default function CreateProjectModal({
     if (!name.trim()) {
       setError("Nama organization wajib diisi");
       return;
-    }
+    } 
 
     try {
       setLoading(true);
