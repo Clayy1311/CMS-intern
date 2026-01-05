@@ -183,3 +183,57 @@ model ContentSEO {
   contentEntry ContentEntries @relation(fields: [contentEntryId], references: [id])
 
 }
+
+model Plans {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique // free, pro, enterprise
+  name          String
+  description   String?
+
+  price         Float    // 0, 155, 200
+  currency      String   @default("USD")
+  interval      String   // month, year
+
+  // limits
+  maxUsers              Int?
+  maxPersonalProjects   Int?
+  maxOrganizations      Int?
+  maxProjectsPerOrg     Int?
+  maxApiCallsPerMonth   Int?
+  maxMediaAssets        Int?
+
+  // features
+  seoEnabled        Boolean @default(false)
+  aiEnabled         Boolean @default(false)
+  customDomain      Boolean @default(false)
+
+  isActive      Boolean @default(true)
+  isPublic      Boolean @default(true)
+
+  stripePriceId String? // diisi setelah create di Stripe
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions Subscriptions[]
+}
+
+
+model Subscriptions {
+  id       Int @id @default(autoincrement())
+
+  planId   Int
+  userId   Int?
+  organizationId Int?
+
+  status   String // active, trialing, canceled, expired
+  startAt  DateTime
+  endAt    DateTime?
+
+  stripeSubscriptionId String?
+
+  plan Plans @relation(fields: [planId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
