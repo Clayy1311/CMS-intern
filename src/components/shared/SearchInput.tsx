@@ -23,7 +23,7 @@ export default function SearchInput({ onCreateClick }: Props) {
       </div>
 
       <div className="grid grid-cols-3 bg-[#3A7AC3] rounded-sm text-white">
-        <div className="p-3">Nama Organizational</div>
+        <div className="p-3"><span className="text-3xl">Nama Organizationsal</span></div>
         <div className="p-3">Collaborator</div>
         <div className="p-3">Action</div>
       </div>

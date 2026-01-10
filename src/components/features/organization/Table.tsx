@@ -29,8 +29,9 @@ export default function TableComponents({ data, onEdit, onDelete }: Props) {
           {data.map((org) => (
             <TableRow key={org.id} className="border-b last:border-b-0">
               <TableCell className="py-3 px-6">
+                {org.id}
                 <Link
-                  href={`/dashboard/organizational/${org.id}?name=${org.name}`} >
+                  href={`/dashboard/organizationalDetail/${org.id}?name=${org.name}`} >
                   {org.name}
                 </Link>
 
