@@ -7,6 +7,7 @@ import home from "./routes/home.routes";
 import coockieParser from "cookie-parser";
 import { Request, Response } from "express";
 import { authMiddleware } from "./middlewares/auth.middleware";
+import { subscriptionMiddleware } from "./middlewares/subscription.middleware";
 import { organizationAccess } from "./middlewares/organizationMiddleware";
 import organizationsRoutes from "./routes/organizations.routes";
 import projectsRoutes from "./routes/projects.routes";
@@ -22,9 +23,18 @@ import personalEntriesRoutes from "./routes/contentMangement/personalProjects/co
 import personalContentSEORoutes from "./routes/contentMangement/personalProjects/contentSEO.routes";
 import organizationPublishingWorkflowRoutes from "./routes/contentMangement/projectsOrganizations/publishingWorkflow.routes";
 import personalPublishingWorkflowRoutes from "./routes/contentMangement/personalProjects/publishingWorkflow.routes";
+import subscriptionRoutes from "./routes/subscription.routes";
+import stripeRoutes from "./routes/stripe.routes";
+import { stripeWebhook } from "./controllers/stripe.controller";
 import cors from 'cors'; 
 const app = express();
 
+
+app.post(
+  "/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 app.use(express.json());
 app.use(coockieParser());
 app.use(cors({
@@ -45,10 +55,16 @@ app.use("/api/dashboard", authMiddleware, profile, home);
 app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
 
 app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalEntriesRoutes,personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes )
+
+app.use("/api", authMiddleware, subscriptionRoutes, stripeRoutes);
 const PORT = process.env.PORT || 3001;
 
 
 
 app.listen(PORT, ()=> {
     console.log(`Server running on http://localhost:${PORT}`)
+});
+
+app.get("/billing/success", (_, res) => {
+  res.send("Payment Success! You can close this tab.");
 });
