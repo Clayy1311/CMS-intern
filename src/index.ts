@@ -26,6 +26,8 @@ import personalPublishingWorkflowRoutes from "./routes/contentMangement/personal
 import subscriptionRoutes from "./routes/subscription.routes";
 import stripeRoutes from "./routes/stripe.routes";
 import { stripeWebhook } from "./controllers/stripe.controller";
+import { stripe } from "./lib/strip";
+import prisma from "./db";
 import cors from 'cors'; 
 const app = express();
 
@@ -52,11 +54,11 @@ app.use("/api/g", authMiddleware,userData);
 app.use("/api/dashboard", authMiddleware, profile, home);
 
 //Organizations //projects //Collaborators //personalProjects
-app.use("/api",authMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
+app.use("/api",authMiddleware, subscriptionMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
 
-app.use("/api",authMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalEntriesRoutes,personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes )
+app.use("/api",authMiddleware, subscriptionMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalEntriesRoutes,personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes )
 
-app.use("/api", authMiddleware, subscriptionRoutes, stripeRoutes);
+app.use("/payment", authMiddleware, subscriptionRoutes, stripeRoutes);
 const PORT = process.env.PORT || 3001;
 
 
@@ -65,6 +67,24 @@ app.listen(PORT, ()=> {
     console.log(`Server running on http://localhost:${PORT}`)
 });
 
-app.get("/billing/success", (_, res) => {
-  res.send("Payment Success! You can close this tab.");
+app.get("/billing/success", async (req, res) => {
+  const sessionId = req.query.session_id as string;
+
+  
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  const subscriptionId = session.subscription as string;
+
+  const sub = await prisma.subscriptions.findUnique({
+    where: { stripeSubscriptionId: subscriptionId }
+  });
+
+ 
+  if (sub?.invoiceUrl) {
+     res.send(`
+      <h2>Payment Successful!</h2>
+      <p>Thank you for your payment. You can check your invoice in email or You can view your invoice below:</p>
+      <a href="${sub.invoiceUrl}">Detail Invoice</a>`);
+  } else {
+    
+  }
 });

@@ -29,6 +29,7 @@ export async function createCheckoutSessionService(userId: number, planId: numbe
     const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         customer_email: user.email,
+      
         line_items: [
             {
                 price: plan.stripePriceId,
@@ -59,8 +60,12 @@ export async function handleStripeWebhookService(event: Stripe.Event) {
     const userId = Number(session.metadata?.userId);
     const planId = Number(session.metadata?.planId);
 
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId ,{
+      expand : ["latest_invoice"]
+    });
 
+   const invoiceUrl = (subscription.latest_invoice as any)?.hosted_invoice_url;
+   
     await prisma.subscriptions.upsert({
       where: {
         stripeSubscriptionId: subscription.id
@@ -68,7 +73,8 @@ export async function handleStripeWebhookService(event: Stripe.Event) {
       update: {
         status: subscription.status,
         startAt: new Date(subscription.current_period_start * 1000),
-        endAt: new Date(subscription.current_period_end * 1000)
+        endAt: new Date(subscription.current_period_end * 1000),
+        invoiceUrl : invoiceUrl
       },
       create: {
         userId,
@@ -76,7 +82,8 @@ export async function handleStripeWebhookService(event: Stripe.Event) {
         status: subscription.status,
         stripeSubscriptionId: subscription.id,
         startAt: new Date(subscription.current_period_start * 1000),
-        endAt: new Date(subscription.current_period_end * 1000)
+        endAt: new Date(subscription.current_period_end * 1000),
+        invoiceUrl : invoiceUrl
       }
     });
   }

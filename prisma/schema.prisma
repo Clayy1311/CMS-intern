@@ -229,7 +229,7 @@ model Subscriptions {
   status   String // active, trialing, canceled, expired
   startAt DateTime?
   endAt   DateTime?
-
+  invoiceUrl String?
   stripeSubscriptionId String? @unique
 
   plan Plans @relation(fields: [planId], references: [id])
