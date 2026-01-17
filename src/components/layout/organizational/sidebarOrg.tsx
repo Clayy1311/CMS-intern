@@ -2,11 +2,15 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export default function SidebarOrganization({
-  orgId,
-}: {
+type Props = {
   orgId: string;
-}) {
+  ProjeCtID: string;
+};
+
+
+export default function SidebarOrganization({
+  orgId,ProjeCtID
+}: Props)  {
   return (
     <aside className="w-64 bg-white border-r shadow-lg pl-4">
       <div className="w-15 bg-white shadow-lg min-h-screen rounded-full fixed">
@@ -47,19 +51,27 @@ export default function SidebarOrganization({
         </div>
       </div>
       <div className="flex justify-center ml-13 p-8 flex-col space-y-8">
-      <h1 className="text-[#3A7AC3]">CMS CMLABS</h1>
-      <div className="text-gray-500 text-light text-sm ml-2 ">
+        <h1 className="text-[#3A7AC3]">CMS CMLABS</h1>
+        <div className="text-gray-500 text-light text-sm ml-2 ">
+        <Link
+          href={`/dashboard/organizationalDetail/${orgId}`}
+          className="text-gray-500 text-sm ml-2"
+        >
           Project
-      </div>
-      <div className="text-gray-500 text-light text-sm ml-2">
-         Collaborator
-      </div>
-      <div className="text-gray-500 text-light text-sm ml-2">
+        </Link>
+
+        </div>
+        <div className="text-gray-500 text-light text-sm ml-2">
+          <Link href={`/dashboard/organizationalDetail/${orgId}/${ProjeCtID}/collaborator`}>
+            Collaborator
+          </Link>
+        </div>
+        <div className="text-gray-500 text-light text-sm ml-2">
           Setting
-      </div>
+        </div>
 
       </div>
-    
+
     </aside>
   );
 }

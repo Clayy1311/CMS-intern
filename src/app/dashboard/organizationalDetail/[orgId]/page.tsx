@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import SearchInput from "@/components/features/organization/project/SearchInputs";
 import CreateProjectModal from "@/components/features/organization/project/CreateModal";
 import { organization } from "@/types/organization";
+import ModalCollaborator from "@/components/features/organization/collaborator/ModalCollaborator";
 import { handleDeleteProject } from "@/service/project/project.service";
 type Project = {
   id: string;
@@ -17,15 +18,18 @@ type Props = {
 
 export default function OrgDetailPage({ } : Props) {
   const [data, setData] = useState<Project[]>([]);
-  const { id: organizationId } = useParams();
+  const { orgId: organizationId } = useParams();
+  const [prjid, setPrjId] = useState<string | null>(null);
+
+
   const [open, setOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const[modalcollaborator, setModalCollaborator] = useState(false);
 
   const fetchProject = async () => {
     const res = await fetch(`http://localhost:3001/api/project/get-all/${organizationId}`, {
       credentials: "include"
     });
-    console.log()
     const json = await res.json();
     console.log("data", json);
     setData(json.data);
@@ -50,6 +54,14 @@ export default function OrgDetailPage({ } : Props) {
       }
      
   };
+
+  const handleCollaborator = async (prj: Project) => {
+    setModalCollaborator(true);
+    const ProjectId = prj.id;
+    setPrjId(ProjectId);
+    console.log("button clicked with id: ", ProjectId);
+
+  }
 
   const handleEdit = (prj: Project) => {
     setSelectedProject(prj);
@@ -81,7 +93,16 @@ export default function OrgDetailPage({ } : Props) {
           data={data}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          modalCollaborator={handleCollaborator}
         />
+
+       
+       <ModalCollaborator 
+       open={modalcollaborator}
+       onClose = {() => setModalCollaborator(false)}
+       ProjectId={prjid}
+       
+       />
 
       </div>
 

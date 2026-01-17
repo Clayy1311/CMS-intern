@@ -69,7 +69,10 @@ export default function CreateProjectModal({
       }
 
       else {
-        await handleCreateProject({ name });
+        await handleCreateProject(
+        organizationId,
+          { name }
+        );
       }
 
       onSuccess();

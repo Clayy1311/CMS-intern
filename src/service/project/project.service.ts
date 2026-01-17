@@ -5,16 +5,14 @@ interface Project {
     name: string
 }
 
-export const handleCreateProject = async (data: Project) => {
-    const res = await fetch("http://localhost:3001/api/projects/12", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data)
+export const handleCreateProject = async(id:string,
+    payload: {name: string}
+) => {
+    const res = await axios.post(`http://localhost:3001/api/projects/${id}`,payload, {
+        withCredentials: true
     })
-    return await res.json();
+    return res.data;
+
 }
 export const hanldeUpdateProject = async (
     organizationId: string,
