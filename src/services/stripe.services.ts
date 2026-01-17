@@ -88,3 +88,17 @@ export async function handleStripeWebhookService(event: Stripe.Event) {
     });
   }
 }
+
+
+//get all data plan 
+
+export async function getAllPlanService(){
+
+  const plan = await prisma.plans.findMany({
+    select : {
+      id : true, code: true, name: true, price : true, description : true
+    }
+  })
+
+  return plan
+}

@@ -26,6 +26,7 @@ import personalPublishingWorkflowRoutes from "./routes/contentMangement/personal
 import subscriptionRoutes from "./routes/subscription.routes";
 import stripeRoutes from "./routes/stripe.routes";
 import { stripeWebhook } from "./controllers/stripe.controller";
+import { handlegetAllPlans } from "./controllers/stripe.controller";
 import { stripe } from "./lib/strip";
 import prisma from "./db";
 import cors from 'cors'; 
@@ -58,6 +59,8 @@ app.use("/api",authMiddleware, subscriptionMiddleware, organizationsRoutes, proj
 
 app.use("/api",authMiddleware, subscriptionMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalEntriesRoutes,personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes )
 
+
+app.get("/plans", handlegetAllPlans)
 app.use("/payment", authMiddleware, subscriptionRoutes, stripeRoutes);
 const PORT = process.env.PORT || 3001;
 

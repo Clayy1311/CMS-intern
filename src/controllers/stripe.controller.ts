@@ -1,4 +1,4 @@
-import { createCheckoutSessionService, handleStripeWebhookService } from "../services/stripe.services";
+import { createCheckoutSessionService, handleStripeWebhookService, getAllPlanService} from "../services/stripe.services";
 
 
 import {stripe} from "../lib/strip"
@@ -35,4 +35,15 @@ export async function stripeWebhook(req: Request, res: Response) {
   await handleStripeWebhookService(event);
 
   res.json({ received: true });
+}
+
+export async function handlegetAllPlans(req: Request, res: Response){
+
+  const plans = await getAllPlanService()
+
+
+  res.json({
+    success : true,
+    data : plans
+  })
 }

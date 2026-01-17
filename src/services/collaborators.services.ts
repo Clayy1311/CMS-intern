@@ -84,7 +84,7 @@ export async function findResource(data:FindAllCollaborators){
 
     const collaborators = await prisma.collaborators.findMany({
         where : {projectId: projectId},
-       select : {status:true, role: true,user : {select : {id: true, fullName:true,  }}}
+       select : { id: true, status:true, role: true,user : {select : {id: true, fullName:true,  }}}
     })
 
     return collaborators
