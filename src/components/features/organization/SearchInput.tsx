@@ -9,7 +9,7 @@ export default function SearchInput({ onCreateClick }: Props) {
   return (
     <main className="w-full space-y-4">
       <div className="flex items-center gap-6">
-        <Input
+        <Input 
           type="text"
           placeholder="Search..."
           className="w-full"
@@ -22,11 +22,7 @@ export default function SearchInput({ onCreateClick }: Props) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 bg-[#3A7AC3] rounded-sm text-white">
-        <div className="p-3 text-md">Nama Organizational</div>
-        <div className="p-3">Collaborator</div>
-        <div className="p-3">Action</div>
-      </div>
+     
     </main>
   );
 }

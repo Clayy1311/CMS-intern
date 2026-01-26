@@ -49,7 +49,7 @@ export default function SidebarDashboard() {
        </div>
        {/* personal project */}
        <div className="py-5 text-[#3A7AC3] text-sm">
-        Personal Project
+       Personal Project
        </div>
        <div className="flex justify-center gap-3 text-[#3A7AC3] pr-8">
         <Image
@@ -59,7 +59,9 @@ export default function SidebarDashboard() {
         height={30}>
           
         </Image>
-        personal Project
+        <Link href="/dashboard/personal-project">
+        Personal Project
+        </Link>
        </div>
         </div>
     )

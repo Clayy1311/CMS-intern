@@ -20,7 +20,7 @@ export default function CreateProjectModal({ open, onClose }: Props) {
           <DialogTitle>Create Project</DialogTitle>
         </DialogHeader>
 
-        {/* isi form nanti */}
+    
         <p className="text-sm text-muted-foreground">
           Form create project di sini
         </p>
