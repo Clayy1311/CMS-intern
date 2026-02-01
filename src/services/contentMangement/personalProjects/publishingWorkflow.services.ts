@@ -50,7 +50,7 @@ export async function updateSchedule(data: SchedulePublish){
         where : {
             id : data.contentEntryId
         }, data : {
-            status : "scheduled",
+            status : "SCHEDULED",
             scheduledAt : new Date(data.scheduledAt),
             updatedBy : data.userId
 
