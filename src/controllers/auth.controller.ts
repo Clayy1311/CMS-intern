@@ -74,12 +74,12 @@ export async function login(req:Request, res:Response){
             email,
             password,
         } = req.body;
-        
+      
         if (!password || !email) {
   return res.status(400).json({ error: "Password and Email is required" });
 }
-  
-const {accessToken, refreshToken} = await loginUser({email, password})
+
+const {accessToken, refreshToken, user} = await loginUser({email, password})
 
         res.cookie("accessToken", accessToken, {
           httpOnly : true,
@@ -100,6 +100,7 @@ const {accessToken, refreshToken} = await loginUser({email, password})
 
           return res.status(200).json({
       message: "Login successful",
+     user
     });
     } catch (err: unknown) {
    

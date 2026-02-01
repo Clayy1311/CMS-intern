@@ -37,7 +37,7 @@ export async function editContentEntry(data: UpdateContentEntries){
             id : data.contentEntryId,
         },data: {
             slug: data.slug,
-            status: data.status,
+            status: data.status as any, 
             updatedBy: data.updatedBy
         }
     })

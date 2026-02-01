@@ -2,37 +2,26 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.roles.upsert({
-    where: { name: "super_admin" },
-    update: {},
-    create: { name: "super_admin", description: "SaaS System Admin" }
-  });
+  const roles = [
+    { name: "super_admin", scope: "global", description: "SaaS System Admin" },
 
-  await prisma.roles.upsert({
-    where: { name: "org_owner" },
-    update: {},
-    create: { name: "org_owner", description: "Organization Owner" }
-  });
+    { name: "org_owner", scope: "project", description: "Organization Owner" },
+    { name: "editor", scope: "project" },
+    { name: "writer", scope: "project" },
+    { name: "reviewer", scope: "project" },
+    { name: "approver", scope: "project" },
+    { name: "viewer", scope: "project" }
+  ];
 
-  await prisma.roles.upsert({
-    where: { name: "editor" },
-    update: {},
-    create: { name: "editor" }
-  });
+  for (const role of roles) {
+    await prisma.roles.upsert({
+      where: { name: role.name },
+      update: {},
+      create: role
+    });
+  }
 
-  await prisma.roles.upsert({
-    where: { name: "writer" },
-    update: {},
-    create: { name: "writer" }
-  });
-
-  await prisma.roles.upsert({
-    where: { name: "reviewer" },
-    update: {},
-    create: { name: "reviewer" }
-  });
-
-  console.log(" Roles seeded");
+  console.log("Roles seeded successfully");
 }
 
 main()

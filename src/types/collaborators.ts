@@ -10,6 +10,7 @@ export interface EditCollaborators{
     ownerId : number,
     collaboratorsId:number,
     role : string
+    roleName : string
 }
 
 

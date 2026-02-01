@@ -52,7 +52,8 @@ export async function editCollaborators(req:Request, res:Response){
                 userId, 
                 projectId, 
                 collaboratorsId,
-                 role
+                 role,
+                 roleName : role
 
             })
 

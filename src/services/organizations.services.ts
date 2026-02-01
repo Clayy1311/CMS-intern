@@ -42,7 +42,8 @@ export async function findResources(userId: number) {
         include: {
             collaborators: {
                 include: {
-                    user:true
+                    user: true,
+                    role: true
                 }
             }
         }
@@ -51,26 +52,40 @@ export async function findResources(userId: number) {
   });
 
   return organizations.map(org => {
-    const isOwner = org.ownerId === userId;
+  const isOwner = org.ownerId === userId;
 
-   
-    const collaborators = org.projects.flatMap(p =>
-      p.collaborators.map(c => ({
-        id: c.user.id,
-        email: c.user.email,
-        avatar: c.user.avatar,
-        role: c.role
-      }))
-    );
 
-    return {
-      id: org.id,
-      name: org.name,
-      role: isOwner ? "owner" : "collaborator",
-      collaborators,
-      collaboratorCount: collaborators.length
-    };
-  });
+  let userRole = "viewer"; 
+
+  if (!isOwner) {
+    const collab = org.projects
+      .flatMap(p => p.collaborators)
+      .find(c => c.userId === userId);
+
+    if (collab) {
+      userRole = collab.role.name;
+    }
+  } else {
+    userRole = "org_owner";
+  }
+
+  const collaborators = org.projects.flatMap(p =>
+    p.collaborators.map(c => ({
+      id: c.user.id,
+      email: c.user.email,
+      avatar: c.user.avatar,
+      role: c.role.name
+    }))
+  );
+
+  return {
+    id: org.id,
+    name: org.name,
+    role: userRole,
+    collaborators,
+    collaboratorCount: collaborators.length
+  };
+});
 }
 
 export async function updateResources(data: UpdateOrganizations){

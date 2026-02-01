@@ -8,7 +8,7 @@ import coockieParser from "cookie-parser";
 import { Request, Response } from "express";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { subscriptionMiddleware } from "./middlewares/subscription.middleware";
-import { organizationAccess } from "./middlewares/organizationMiddleware";
+import { superAdminGuard } from "./middlewares/roleGuard.middleware";
 import organizationsRoutes from "./routes/organizations.routes";
 import projectsRoutes from "./routes/projects.routes";
 import collaboratorsRoutes from "./routes/collaborators.routes";
@@ -24,7 +24,9 @@ import personalContentSEORoutes from "./routes/contentMangement/personalProjects
 import organizationPublishingWorkflowRoutes from "./routes/contentMangement/projectsOrganizations/publishingWorkflow.routes";
 import personalPublishingWorkflowRoutes from "./routes/contentMangement/personalProjects/publishingWorkflow.routes";
 import subscriptionRoutes from "./routes/subscription.routes";
+import superAdminRoutes from "./routes/superAdmin/manageUser.routes";
 import stripeRoutes from "./routes/stripe.routes";
+import dashboardRoutes from "./routes/dashboard.routes"
 import { stripeWebhook } from "./controllers/stripe.controller";
 import { handlegetAllPlans } from "./controllers/stripe.controller";
 import { stripe } from "./lib/strip";
@@ -55,13 +57,17 @@ app.use("/api/g", authMiddleware,userData);
 app.use("/api/dashboard", authMiddleware, profile, home);
 
 //Organizations //projects //Collaborators //personalProjects
-app.use("/api",authMiddleware, subscriptionMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes)
+app.use("/api",authMiddleware, subscriptionMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes, dashboardRoutes)
 
 app.use("/api",authMiddleware, subscriptionMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes, organizationContentEntriesRoutes, organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalEntriesRoutes,personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes )
 
 
 app.get("/plans", handlegetAllPlans)
 app.use("/payment", authMiddleware, subscriptionRoutes, stripeRoutes);
+
+//super admin routes 
+
+app.use("/super-admin", authMiddleware, superAdminGuard, superAdminRoutes);
 const PORT = process.env.PORT || 3001;
 
 

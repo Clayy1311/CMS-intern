@@ -9,7 +9,7 @@ export async function updatePublish(data: Publish){
         where : {
             id : data.contentEntryId
         }, data : {
-            status : "published",
+            status : "PUBLISHED",
             publishedAt : new Date()
         }
     })
@@ -23,7 +23,7 @@ export async function updateUnpublish(data: Unpublish){
         where : {
             id : data.contentEntryId
         }, data : {
-            status : "draft",
+            status : "DRAFT",
             publishedAt : null,
             updatedBy : data.userId
         }
@@ -37,7 +37,7 @@ export async function updateReview(data:Review){
         where : {
             id : data.contentEntryId
         }, data :{
-            status : "review",
+            status : "IN_REVIEW",
             updatedBy : data.userId
         }
     })

@@ -87,15 +87,26 @@ export async function verifyEmail({token} : {token: string}){
 
 export async function loginUser(data: LoginUserInput){
     const {email, password} = data
-    const user = await prisma.users.findUnique({ where: { email } });
+    const user = await prisma.users.findUnique({
+       where: { email },
+       include : {
+        subscription : true
+       }
+    });
+
+
+    
     if (!user) throw new Error ("User Not Found");
+
+    const isSubscription = user.subscription && user.subscription.status === "active" && user.subscription.endAt && user.subscription.endAt > new Date();
 
     if (!user.isVerified) {
         throw new Error("Please verify your email")    
     }
 
     if (!user.password) throw new Error("Password not set. Please login with Google");
-
+    
+    
 
 const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error("Password is invalid")
@@ -120,7 +131,8 @@ const isValid = await bcrypt.compare(password, user.password);
 return {accessToken, refreshToken, 
   user : {
     id : user.id,
-    email: user.email
+    email: user.email,
+    isSubscription
   }
 }
 }

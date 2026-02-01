@@ -1,36 +1,54 @@
-import prisma from "../db";
 import { Request, Response, NextFunction } from "express";
+import prisma from "../db";
 
-
-export async function orgProjectAccess(req: Request, res:Response, next:NextFunction){
-
+export async function orgProjectAccess(
+  req: any,
+  res: Response,
+  next: NextFunction
+) {
+  try {
     const userId = req.userId as number;
-    const projectId = Number(req.params.projectId)
+    const projectId = Number(req.params.projectId);
 
-
-    const project = await prisma.projects.findUnique({
-        where : {
-            id : projectId
-        },
-        include: {
-            collaborators : true,
-            organization : true
-        }
-    })
-
-    if(!project){
-        return res.status(404).json({message : "project not found"})
+    if (!projectId) {
+      return res.status(400).json({ message: "Invalid project id" });
     }
 
-    const isOwner =  project.organization.ownerId === userId
+   
+    const project = await prisma.projects.findUnique({
+      where: { id: projectId },
+      select: {
+        id: true,
+        organization: { select: { ownerId: true } },
+        collaborators: {
+          where: {
+            userId,
+            status: "active"
+          },
+          select: { id: true, role: true }
+        }
+      }
+    });
 
-    const isCollaborator = project.collaborators.some(c => 
-    c.userId === userId && c.status === "active"
-  );
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const isOwner = project.organization.ownerId === userId;
+    const collaborator = project.collaborators[0]; 
+
+    if (!isOwner && !collaborator) {
+      return res.status(403).json({ message: "No project access" });
+    }
+
   
-  if(!isOwner && !isCollaborator){
-    return res.status(403).json({message: "You dont have authorize"})
-  }
+    req.project = project;
+    req.isOrgOwner = isOwner;
+    req.collaborator = collaborator || null;
 
-  next();
+    next();
+  } catch (err) {
+    console.error("orgProjectAccess error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 }

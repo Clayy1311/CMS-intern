@@ -34,6 +34,7 @@ model Users {
   reviewingEntries ContentEntries[] @relation("EntryReviewer")
   approvingEntries ContentEntries[] @relation("EntryApprover")
   workflowLogs WorkflowLogs[]
+  subscription Subscriptions?
 }
 
 model Organizations {
@@ -68,7 +69,8 @@ model Collaborators {
   id          Int       @id @default(autoincrement())
   projectId   Int
   userId      Int
-  role        String    @default("collaborator") // owner, editor, viewer, etc.
+  roleId      Int
+  role    Roles   @relation(fields: [roleId], references: [id])
   status      String    @default("active")       // active, pending, etc.
   createdAt   DateTime  @default(now())
 
@@ -235,7 +237,7 @@ model Subscriptions {
   id       Int @id @default(autoincrement())
 
   planId   Int
-  userId   Int?
+  userId   Int?  @unique 
   organizationId Int?
 
   status   String // active, trialing, canceled, expired
@@ -245,17 +247,19 @@ model Subscriptions {
   stripeSubscriptionId String? @unique
 
   plan Plans @relation(fields: [planId], references: [id])
-
+  user Users? @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Roles {
   id Int @id @default(autoincrement())
-  name String @unique // super admin, org owner, editor, writer, reviewer
+  name String @unique 
+  scope String // "global" or "project"
   description String?
-  permission Json? //optional 
+  permissions Json?
 
+  collaborators Collaborators[]
   users Users[]
 }
 
@@ -265,6 +269,7 @@ enum ContentStatus {
   APPROVED
   PUBLISHED
   REJECTED
+  SCHEDULED
 }
 
 model WorkflowLogs {
