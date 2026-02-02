@@ -98,7 +98,7 @@ model ContentModels {
   projectOrgId Int? // "org" 
   projectPersonalId Int? //  "personal"
   name String
-  apiKey String @unique  // e.g. "blog", "product", "landing_page"
+  slug String @unique // e.g. "blog", "product", "landing_page"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -115,17 +115,17 @@ model ContentFields {
   contentModelId Int
   name String
   key String
-  type String
+  type FieldType
   required  Boolean @default(false)
   unique Boolean @default(false)
   order Int @default(0)
-
+  isSystem Boolean @default(false)
   validation Json?
 
   relationType String?  // one-to-one, one-to-many, many-to-many
   relationContentModelId Int? // points to another ContentModels.id
   contentValues ContentValues[]
-
+  contentField ContentRelations[]
   contentModel ContentModels @relation(fields: [contentModelId], references: [id])
   relatedModel ContentModels? @relation("FieldRelation", fields: [relationContentModelId], references: [id])
 
@@ -147,6 +147,9 @@ model ContentEntries {
   contentValues ContentValues[]
   contentSEO  ContentSEO?
   workflowEntries WorkflowLogs[]
+  sourceEntry ContentRelations[] @relation("SourceEntry")
+  targetEntry ContentRelations[] @relation("TargetEntry")
+ 
 
   reviewerId Int?
   approvedById Int?
@@ -174,13 +177,22 @@ model ContentValues {
   valueNumber Float?
   valueBool Boolean?
   valueDate DateTime? //  rich text / blocks / images / arrays
-  valueRefId Int? // relation
+
   
 
   contentEntry ContentEntries @relation(fields: [contentEntryId], references:[id])
   contentField ContentFields @relation(fields: [contentFieldId], references:[id])
-  @@unique([contentEntryId, contentFieldId])
 
+}
+model ContentRelations {
+  id Int @id @default(autoincrement())
+  sourceEntryId Int
+  targetEntryId Int
+  contentFieldId Int
+
+  sourceEntry ContentEntries @relation("SourceEntry", fields:[sourceEntryId], references:[id])
+  targetEntry ContentEntries @relation("TargetEntry", fields:[targetEntryId], references:[id])
+  contentField ContentFields @relation(fields:[contentFieldId], references:[id])
 }
 
 model ContentSEO {
@@ -270,6 +282,17 @@ enum ContentStatus {
   PUBLISHED
   REJECTED
   SCHEDULED
+}
+
+enum FieldType {
+  TEXT
+  RICHTEXT
+  NUMBER
+  BOOLEAN
+  DATE
+  IMAGE
+  RELATION
+  JSON
 }
 
 model WorkflowLogs {
