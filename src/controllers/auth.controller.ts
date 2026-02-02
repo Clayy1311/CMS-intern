@@ -98,9 +98,16 @@ const {accessToken, refreshToken, user} = await loginUser({email, password})
           maxAge : 7 * 24 * 60 * 60 * 1000, //7 days
         })
 
+        res.cookie("isSubscription", user.isSubscription, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+          sameSite: "lax",
+        });
+
           return res.status(200).json({
       message: "Login successful",
-     user
+   
     });
     } catch (err: unknown) {
    
@@ -194,7 +201,7 @@ export async function logout(req:Request, res:Response){
   const user = await logoutUser({userId})
    res.clearCookie("accessToken", { path: "/" });
     res.clearCookie("refreshToken", { path: "/" });
-
+    res.clearCookie("isSubscription", { path: "/" });
 res.json({ message : "Logout Successfully", user})
  }catch(err: unknown){
   if(err instanceof Error){
