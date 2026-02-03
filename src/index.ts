@@ -19,7 +19,7 @@ import organizationContentEntriesRoutes from "./routes/contentMangement/projects
 import organizationContentSEORoutes from "./routes/contentMangement/projectsOrganizations/contentSEO.routes";
 import personalContentModelsRoute from "./routes/contentMangement/personalProjects/contentModels.routes";
 import personalFieldRoute from "./routes/contentMangement/personalProjects/contentFields.routes";
-// import personalEntriesRoutes from "./routes/contentMangement/personalProjects/contentEntries.routes";
+import personalEntriesRoutes from "./routes/contentMangement/personalProjects/contentEntries.routes";
 import personalContentSEORoutes from "./routes/contentMangement/personalProjects/contentSEO.routes";
 import organizationPublishingWorkflowRoutes from "./routes/contentMangement/projectsOrganizations/publishingWorkflow.routes";
 import personalPublishingWorkflowRoutes from "./routes/contentMangement/personalProjects/publishingWorkflow.routes";
@@ -59,7 +59,7 @@ app.use("/api/dashboard", authMiddleware, profile, home);
 //Organizations //projects //Collaborators //personalProjects
 app.use("/api",authMiddleware, subscriptionMiddleware, organizationsRoutes, projectsRoutes, collaboratorsRoutes, personalProjectsRoutes, dashboardRoutes)
 
-app.use("/api",authMiddleware, subscriptionMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes,  organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes, organizationContentEntriesRoutes )
+app.use("/api",authMiddleware, subscriptionMiddleware, organizationsContentModelsRoutes, organizationsContentFieldsRoutes,  organizationContentSEORoutes, personalContentModelsRoute, personalFieldRoute, personalContentSEORoutes, organizationPublishingWorkflowRoutes, personalPublishingWorkflowRoutes, organizationContentEntriesRoutes, personalEntriesRoutes )
 
 
 app.get("/plans", handlegetAllPlans)

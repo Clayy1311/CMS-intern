@@ -80,13 +80,18 @@ export interface DeleteContentField{
 //Content Entries
 export interface CreateContentEntries{
     contentModelId : number,
-    personalProjectId : number
-    createdBy : number,
+    personalProjectId : number,
+    userId : number,
     slug? : string,
     contentValues : Array<{
       contentFieldId: number;
       contentValue: any;
     }>;
+    seo : {
+     seoTitle : string,
+     metaDesc : string,
+     keywords : string   
+    }
 }
 
 
@@ -95,13 +100,21 @@ export interface UpdateContentEntries{
     personalProjectId : number
     slug? : string,
     status? : string,
-    updatedBy : number
+    userId : number
      contentValues : Array<{
       contentFieldId: number;
       contentValue: any;
     }>;
+     seo : {
+        seoTitle : string,
+        metaDesc : string,
+        keywords : string
+    }
 }
 
+export interface GetContentEntriesByModel{
+    contentModelId : number
+}
 export interface GetContentEntries{
     contentEntryId : number,
 
