@@ -2,47 +2,47 @@ import { createContentField, editContentField, destroyContentField } from "../..
 import { Request, Response } from "express"
 
 export async function postContentField(req:Request, res:Response){
-
-
     try {
     const contentModelId = Number(req.params.contentModelId)
-    const data = req.body
-    const contentField = await createContentField({contentModelId, ...data})
+    const {name,key,type,required,unique,order,validation,relationType,relationContentModelId} = req.body
 
-    res.json({
-        success: true,
-        message: "field added",
-        data : contentField
-    })
+    if (!contentModelId || !name || !key || !type) {
+    return res.status(400).json({ message: 'Missing required fields' })
+  }
 
 
-    }  catch (err) {
+    const contentField   = await createContentField({contentModelId, name,key,type,required,unique,order,validation,relationType,relationContentModelId})
+
+    return res.json({success : true, data:contentField})
+
+
+    } catch (err) {
         if(err instanceof Error){
             return res.status(500).json({error : err.message})
         }
     }
-  
+
+
+
 }
+
 
 export async function updateContentField(req:Request, res:Response){
-
     try {
-        const contentFieldId  = Number(req.params.contentFieldId)
-        const data = req.body
+        const contentFieldId = Number(req.params.contentFieldId)
+       const {name,key,type,required,unique,order,validation,relationType,relationContentModelId} = req.body
 
-        const contentField = await editContentField({contentFieldId, ...data})
+        const editField = await editContentField({contentFieldId, name, key, type, required, unique, order,validation, relationType,relationContentModelId})
 
-        res.json({
-            success : true,
-            message : "Update successful",
-            data : contentField
-        })
-    }  catch (err) {
+        return res.json({sucess: true, data: editField})
+    } catch (err) {
         if(err instanceof Error){
             return res.status(500).json({error : err.message})
         }
     }
+
 }
+
 
 export async function deleteContentField(req:Request, res:Response){
     try {
