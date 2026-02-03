@@ -45,12 +45,8 @@ export async function detailContentModel(contentModelId:number){
         where : {
             id: contentModelId,
            
-        }, select:{
-            id : true,
-            name : true,
-              slug : true,
-            createdAt: true,
-           
+        }, include : {
+            contentFields : true
         }
     })
 

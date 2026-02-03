@@ -1,5 +1,6 @@
 import { createContentModel,showContentModel,editContentModel, destroyContentModel } from "../../../services/contentMangement/personalProjects/contentModels.services";
 import { Request, Response } from "express";
+import { detailContentModel } from "../../../services/contentMangement/projectOrganizations/contentModels.services";
 
 
 
@@ -47,6 +48,26 @@ export async function indexContentModel(req:Request, res:Response){
     
 }
 
+export async function infoContentModel(req:Request, res:Response){
+    try {
+        const contentModelId = Number(req.params.contentModelId)
+
+        const contentModel = await detailContentModel(contentModelId)
+
+        if(!contentModel){
+            return res.status(404).json({message : "Content Model not found"})
+        }
+
+       return res.json({
+        success : true,
+        data : contentModel
+       })
+    } catch (error) {
+        if(error instanceof Error){
+            return res.status(500).json({error : error.message})
+        }
+    }
+}
 
 export async function updateContentModel(req:Request, res:Response){
 
