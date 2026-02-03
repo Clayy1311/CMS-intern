@@ -101,7 +101,8 @@ model ContentModels {
   slug String @unique // e.g. "blog", "product", "landing_page"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  deletedAt DateTime?
+  isArchived Boolean @default(false)
 
   organizationProject Projects? @relation(fields: [projectOrgId], references:[id])
   personalProjects  PersonalProjects? @relation(fields: [projectPersonalId], references:[id]) 

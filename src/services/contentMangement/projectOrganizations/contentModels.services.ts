@@ -29,7 +29,8 @@ export async function showContentModel(projectId: number){
 
         },
         include: {
-            contentFields : true
+            contentFields : true,
+            
         }
     })
     return contentModel
@@ -75,9 +76,12 @@ export async function editContentModel(data:UpdateContentModel){
 
 export async function destroyContentModel(contentModelId:number){
 
-    const contentModel = await prisma.contentModels.delete({
+    const contentModel = await prisma.contentModels.update({
         where : {
             id : contentModelId
+        },data : {
+            deletedAt : new Date(),
+            isArchived : true
         }
     })
 
