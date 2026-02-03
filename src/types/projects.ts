@@ -35,15 +35,16 @@ export interface InformationProject {
 export interface CreateContentModel{
   projectId : number,
   name : string,
-  apiKey: string,
-
+//   apiKey: string,
+  slug : string
 }
 
 
 export interface UpdateContentModel{
     contentModelId: number,
-    apiKey:string,
+    // apiKey:string,
     name: string,
+    slug : string
 }
 
 
@@ -82,12 +83,17 @@ export interface DeleteContentField{
 export interface CreateContentEntries{
     contentModelId : number,
     projectId : number,
-    createdBy : number,
+    userId: number,
     slug? : string,
     contentValues : Array<{
       contentFieldId: number;
       contentValue: any;
     }>;
+    seo : {
+     seoTitle : string,
+     metaDesc : string,
+     keywords : string   
+    }
 }
 
 
@@ -96,18 +102,28 @@ export interface UpdateContentEntries{
     projectId : number,
     slug? : string,
     status? : string,
-    updatedBy : number
+    userId : number,
      contentValues : Array<{
       contentFieldId: number;
       contentValue: any;
     }>;
+    seo : {
+        seoTitle : string,
+        metaDesc : string,
+        keywords : string
+    }
 }
 
 export interface GetContentEntries{
     contentEntryId : number,
 
+
 }
 
+
+export interface GetContentEntriesByModel{
+    contentModelId : number
+}
 export interface DeleteContentEntries{
     contentEntryId : number
 }

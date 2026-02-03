@@ -7,7 +7,7 @@ export async function createContentModel(data: CreateContentModel){
     const createModel = await prisma.contentModels.create({
         data : {
             name : data.name,
-            apiKey : data.apiKey,
+            slug : data.slug,
             projectPersonalId: data.personalProjectId
             
         }
@@ -37,7 +37,7 @@ export async function editContentModel(data:UpdateContentModel){
             id : data.contentModelId
         }, data : {
             name : data.name,
-            apiKey : data.apiKey
+           slug : data.slug
         }
     })
 

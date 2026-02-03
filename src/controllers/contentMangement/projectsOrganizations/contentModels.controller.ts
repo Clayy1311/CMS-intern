@@ -5,11 +5,11 @@ import { Request, Response } from "express";
 export async function postContentModel(req:Request, res:Response){
 
     try {
-        const {name, apiKey} = req.body
+        const {name} = req.body
         const projectId = Number(req.params.projectId)
     
-
-        const createModel = await createContentModel({name,apiKey, projectId})
+         const slug = name.toLowerCase().replace(/\s+/g, '_')
+        const createModel = await createContentModel({name, projectId, slug })
       
         return res.json({success:true, data: createModel})
         
@@ -53,12 +53,12 @@ export async function infoContentModel(req:Request, res:Response){
 export async function updateContentModel(req:Request, res:Response){
     try {
          const contentModelId = Number(req.params.contentModelId)
-         const {apiKey, name} = req.body
-         const contentModel = await editContentModel({apiKey, name, contentModelId})
+         const { name} = req.body
 
-         if(!apiKey){
-            return res.status(403).json({message : "apiKey Required"})
-         }
+         const slug = name.toLowerCase().replace(/\s+/g, '_')
+         const contentModel = await editContentModel({slug, name, contentModelId})
+        
+         
 
          if(!name){
              return res.status(403).json({message : "name Required"})

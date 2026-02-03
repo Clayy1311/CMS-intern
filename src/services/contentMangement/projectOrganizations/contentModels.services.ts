@@ -9,11 +9,11 @@ export async function getContentModel(){
 
 export async function createContentModel(data: CreateContentModel){
 
-    const {projectId, name, apiKey} = data
+    const {projectId, name, slug } = data
      const contentModel = await prisma.contentModels.create({
           data: {
             name,
-            apiKey,
+            slug,
             projectOrgId : projectId
           }
      })
@@ -45,8 +45,9 @@ export async function detailContentModel(contentModelId:number){
             id: contentModelId,
            
         }, select:{
+            id : true,
             name : true,
-            apiKey: true,
+              slug : true,
             createdAt: true,
            
         }
@@ -58,14 +59,14 @@ export async function detailContentModel(contentModelId:number){
 
 export async function editContentModel(data:UpdateContentModel){
 
-    const {contentModelId, apiKey,name} = data
+    const {contentModelId,name, slug} = data
 
     const contentModel =await prisma.contentModels.update({
         where : {
             id : contentModelId
         }, data : {
             name,
-            apiKey
+            slug
         }
     })
 

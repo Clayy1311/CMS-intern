@@ -27,7 +27,7 @@ model Users {
   verifyToken String? 
   roleId Int? 
   role Roles? @relation(fields: [roleId], references:[id])
-
+  
   ownedOrganizations Organizations[] @relation("UserOrganizations")
   collaborations     Collaborators[]
   ownedProjects     PersonalProjects[] @relation("UserProjects")
@@ -144,6 +144,7 @@ model ContentEntries {
   slug String?
   createdBy Int
   updatedBy Int?
+  deletedAt DateTime?
   contentValues ContentValues[]
   contentSEO  ContentSEO?
   workflowEntries WorkflowLogs[]
@@ -182,7 +183,7 @@ model ContentValues {
 
   contentEntry ContentEntries @relation(fields: [contentEntryId], references:[id])
   contentField ContentFields @relation(fields: [contentFieldId], references:[id])
-
+  @@unique([contentEntryId, contentFieldId])
 }
 model ContentRelations {
   id Int @id @default(autoincrement())

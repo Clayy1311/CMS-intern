@@ -9,10 +9,11 @@ export async function postModel(req:Request, res:Response){
 
     try {
     const personalProjectId = Number(req.params.personalProjectId)
-    const data = req.body
+    const {name} = req.body
 
+     const slug = name.toLowerCase().replace(/\s+/g, '_')
 
-    const createModel = await createContentModel({personalProjectId, ...data})
+    const createModel = await createContentModel({personalProjectId, name, slug})
 
 
     res.json({
@@ -51,9 +52,15 @@ export async function updateContentModel(req:Request, res:Response){
 
     try {
         const contentModelId = Number(req.params.contentModelId)
-        const data = req.body
+        const {name} = req.body
 
-        const contentModel = await editContentModel({contentModelId, ...data})
+        if(!name) {
+            return res.status(403).json({message : "name Required"})
+        }
+
+        const slug = name.toLowerCase().replace(/\s+/g, '_')
+
+        const contentModel = await editContentModel({contentModelId, name, slug})
 
         res.json({
             success: true,

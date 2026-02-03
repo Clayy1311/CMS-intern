@@ -8,6 +8,10 @@ export async function postContentField(req:Request, res:Response){
     const contentModelId = Number(req.params.contentModelId)
     const {name,key,type,required,unique,order,validation,relationType,relationContentModelId} = req.body
 
+    if (!contentModelId || !name || !key || !type) {
+    return res.status(400).json({ message: 'Missing required fields' })
+  }
+
 
     const contentField   = await createContentField({contentModelId, name,key,type,required,unique,order,validation,relationType,relationContentModelId})
 

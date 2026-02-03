@@ -1,3 +1,4 @@
+import { FieldType } from "@prisma/client";
 import prisma from "../../../db";
 import { CreateContentField, UpdateContentField, DeleteContentField } from "../../../types/personalProjects";
 
@@ -8,7 +9,7 @@ export async function createContentField(data: CreateContentField){
             contentModelId : data.contentModelId,
             name  : data.name,
             key : data.key,
-            type : data.type,
+            type : data.type as FieldType,
             required: data.required ?? false,
              unique:data.unique?? false,
             order: data.order?? 0,
@@ -29,7 +30,7 @@ export async function editContentField(data: UpdateContentField){
         }, data : {
             name : data.name,
             key : data.key,
-            type : data.type,
+            type : data.type as FieldType,
             required : data.required ?? false,
             unique:data.unique?? false,
             order: data.order?? 0,
