@@ -19,7 +19,7 @@ export function roleGuard(allowedRoles: string[]) {
         return res.status(403).json({ message: "No project access" });
       }
 
-      const userRole = collaborator.role;
+      const userRole = collaborator.role.name;
 
       if (!allowedRoles.includes(userRole)) {
         return res.status(403).json({

@@ -152,3 +152,4 @@ export async function getAllUser(projectId : Number){
    const user = await prisma.users.findMany();
    return user
 }
+

@@ -46,6 +46,9 @@ export async function editCollaborators(req:Request, res:Response){
     const {role} = req.body
 
 
+    if(!userId){
+        return res.status(404).json({error : "User not found"})
+    }
     try {
         const collaborators = await editResource(
             {   ownerId:Number(ownerId), 

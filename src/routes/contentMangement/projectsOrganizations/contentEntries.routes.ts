@@ -5,7 +5,7 @@ import { orgProjectAccess } from "../../../middlewares/organizationalProjectAcce
 const router = Router()
 
 
-router.post("/projects/:projectId/content-entry/content-models/:contentModelId", orgProjectAccess, postContentEntry)
+router.post("/projects/:projectId/content-entry/content-models/:contentModelId",  orgProjectAccess, postContentEntry)
 router.patch("/projects/:projectId/content-entry/:contentEntryId", orgProjectAccess, updateContentEntry)
 router.get("/projects/:projectId/content-entry/:contentEntryId", orgProjectAccess, handleGetContentEntryById)
 router.get("/projects/:projectId/content-entry/content-models/:contentModelId", orgProjectAccess, getAllContentEntry)

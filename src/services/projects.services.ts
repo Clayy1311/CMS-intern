@@ -12,10 +12,28 @@ if(!existingOrg) throw new Error("Organizations Not Found");
         throw new Error("You are not authorized to update this organization");
     }
 
+   const ownerRole = await prisma.roles.findUnique({
+    where : {
+      name : "org_owner"
+    }
+   })
       const organizations = await prisma.projects.create({
         data : {
             name,
-            organization: {connect: {id : organizationsId}}
+            organization: {connect: {id : organizationsId}},
+            collaborators : {
+              create : {
+                user : {connect : {id: ownerId}},
+                role : {connect : {id : ownerRole?.id}}
+              }
+            },
+        },include : {
+          collaborators : {
+            include : {
+              user : true,
+              role : true
+            }
+          }
         }
 
       })

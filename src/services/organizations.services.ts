@@ -14,7 +14,9 @@ export async function createResource(data : Organizations){
           data : {
             name,
            owner: {connect: { id: ownerId }, 
-      },
+           
+      }
+     
           }
     })
     return organizations

@@ -1,3 +1,4 @@
+import { error } from "console";
 import { createResource, findResources, updateResources, deleteResources} from "../services/organizations.services";
 import { Request, Response } from "express";
 
@@ -8,6 +9,9 @@ export async function createOrganizations(req:Request, res:Response){
     const ownerId = req.userId
 
     try {
+      if(!name || !name.trim()){
+        return res.status(400).json({error : "Organization name is required"})
+      }
         const organizations = await createResource({
             name : String(name),
              ownerId : Number(ownerId),

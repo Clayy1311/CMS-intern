@@ -1,53 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../db";
 
-export const organizationAccess = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const userId = (req as any).userId; 
-    const organizationId = Number(req.params.organizationId);
+export async function orgProjectAccess(req: Request, res: Response, next: NextFunction) {
+  const userId = req.userId;
+  const projectId = Number(req.params.projectId);
 
-    if (!organizationId || isNaN(organizationId)) {
-      return res.status(400).json({ error: "Organization ID is required" });
-    }
+  const project = await prisma.projects.findUnique({
+    where: { id: projectId },
+    include: { 
+      organization: true, 
+      collaborators: true 
+    },
+  });
 
-    // 1) Check if user is the OWNER
-    const isOwner = await prisma.organizations.findFirst({
-      where: {
-        id: organizationId,
-        ownerId: userId,
-      },
-    });
+  if (!project) return res.status(404).json({ message: "Project not found" });
 
-    if (isOwner) {
-      return next(); 
-    }
+  const isOwner = project.organization.ownerId === userId;
 
-    // 2) Check if user is a COLLABORATOR
-    const isCollaborator = await prisma.projects.findFirst({
-      where: {
-        organizationId,
-        collaborators: {
-          some: {
-            userId: userId,
-          },
-        },
-      },
-    });
+  const isCollaborator = project.collaborators.some(c => 
+    c.userId === userId && c.status === "active"
+  );
 
-    if (isCollaborator) {
-      return next();
-    }
+  if (!isOwner && !isCollaborator)
+    return res.status(403).json({ message: "Unauthorized" });
 
-   
-    return res.status(403).json({ error: "Access denied" });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Internal server error",
-      details: (error as Error).message,
-    });
-  }
-};
+  next();
+}
