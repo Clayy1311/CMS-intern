@@ -60,6 +60,7 @@ async function main(){
             isVerified : true,
             company : "Hawimaru Corp",
             avatar : "https://i.pravatar.cc/150?img=3",
+            
         },
            {
             fullName : "Arjuna Wira Yudha",
