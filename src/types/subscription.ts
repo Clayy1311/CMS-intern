@@ -10,3 +10,8 @@ export interface getActiveSubscription {
     organizationId? : number;
     userId? : number;
 }
+
+export interface InformationPackage{
+    userId : number
+
+}

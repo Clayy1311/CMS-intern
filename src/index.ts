@@ -27,7 +27,8 @@ import personalPublishingWorkflowRoutes from "./routes/contentMangement/personal
 import subscriptionRoutes from "./routes/subscription.routes";
 import superAdminRoutes from "./routes/superAdmin/manageUser.routes";
 import stripeRoutes from "./routes/stripe.routes";
-import dashboardRoutes from "./routes/dashboard.routes"
+import dashboardRoutes from "./routes/dashboard.routes";
+import planAndBilling from "./routes/plan & billings/planAndBilling.routes";
 import { stripeWebhook } from "./controllers/stripe.controller";
 import { handlegetAllPlans } from "./controllers/stripe.controller";
 import { stripe } from "./lib/strip";
@@ -99,3 +100,7 @@ app.get("/billing/success", async (req, res) => {
     
   }
 });
+
+//Plan and Billing
+
+app.use("/subscription", authMiddleware,  subscriptionMiddleware, planAndBilling)
